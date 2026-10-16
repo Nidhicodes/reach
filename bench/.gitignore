@@ -1,0 +1,4 @@
+adojo.db*
+.venv/
+results/pairs_*.json
+results/tool_legs.json

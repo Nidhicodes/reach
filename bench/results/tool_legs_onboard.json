@@ -1,0 +1,482 @@
+{
+ "agentdojo-workspace.send_email": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.delete_email": {
+  "legs": [
+   "untrusted",
+   "private",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.get_unread_emails": {
+  "legs": [
+   "untrusted",
+   "private",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.get_sent_emails": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.get_received_emails": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.get_draft_emails": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.search_emails": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.search_contacts_by_name": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.search_contacts_by_email": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.get_current_day": {
+  "legs": [],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.search_calendar_events": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.get_day_calendar_events": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.create_calendar_event": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.cancel_calendar_event": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.reschedule_calendar_event": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.add_calendar_event_participants": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.append_to_file": {
+  "legs": [
+   "private",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.search_files_by_filename": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.create_file": {
+  "legs": [
+   "private",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.delete_file": {
+  "legs": [
+   "private",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.get_file_by_id": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.list_files": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.share_file": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-workspace.search_files": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_user_information": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_all_hotels_in_city": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_hotels_prices": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_rating_reviews_for_hotels": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_hotels_address": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_all_restaurants_in_city": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_cuisine_type_for_restaurants": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_restaurants_address": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_rating_reviews_for_restaurants": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_dietary_restrictions_for_all_restaurants": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_contact_information_for_restaurants": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_price_for_restaurants": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.check_restaurant_opening_hours": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_all_car_rental_companies_in_city": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_car_types_available": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_rating_reviews_for_car_rental": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_car_fuel_options": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_car_rental_address": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_car_price_per_day": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.create_calendar_event": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.search_calendar_events": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_day_calendar_events": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.cancel_calendar_event": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.reserve_hotel": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.reserve_car_rental": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.reserve_restaurant": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.get_flight_information": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-travel.send_email": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-banking.get_iban": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-banking.send_money": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-banking.schedule_transaction": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-banking.update_scheduled_transaction": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-banking.get_balance": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-banking.get_most_recent_transactions": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-banking.get_scheduled_transactions": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-banking.read_file": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-banking.get_user_info": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-banking.update_password": {
+  "legs": [
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-banking.update_user_info": {
+  "legs": [
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-slack.get_channels": {
+  "legs": [],
+  "source": "onboard"
+ },
+ "agentdojo-slack.add_user_to_channel": {
+  "legs": [
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-slack.read_channel_messages": {
+  "legs": [
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-slack.read_inbox": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-slack.send_direct_message": {
+  "legs": [
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-slack.send_channel_message": {
+  "legs": [
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-slack.get_users_in_channel": {
+  "legs": [],
+  "source": "onboard"
+ },
+ "agentdojo-slack.invite_user_to_slack": {
+  "legs": [
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-slack.remove_user_from_slack": {
+  "legs": [
+   "acts"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-slack.get_webpage": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "onboard"
+ },
+ "agentdojo-slack.post_webpage": {
+  "legs": [
+   "external",
+   "acts"
+  ],
+  "source": "onboard"
+ }
+}

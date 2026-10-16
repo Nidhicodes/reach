@@ -357,7 +357,7 @@ async function proposeHardening() {
   const box = $("#harden-out");
   box.replaceChildren(el("p", { class: "muted" }, "Planning edits for each config..."));
   const r = await api("/api/harden", {});
-  box.replaceChildren(el("p", { class: "muted" }, `Dry run: nothing is written. ${r.note}.`));
+  box.replaceChildren(el("p", { class: "muted" }, `Dry run: nothing is written. ${r.note}`));
   r.configs.forEach((c) => {
     const card = el("div", { class: "card" }, el("strong", {}, `${c.agent} (${c.file}): ${c.paths} path(s)`));
     if (!c.edits.length) card.append(el("div", { class: "muted" }, "Already guarded: every send needs a human."));

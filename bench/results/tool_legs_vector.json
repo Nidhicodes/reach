@@ -1,0 +1,895 @@
+{
+ "agentdojo-workspace.send_email": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "generic": [
+   "external"
+  ],
+  "neighbours": [
+   "salesforce.SALESFORCE_SEND_EMAIL",
+   "salesforce.SALESFORCE_SEND_EMAIL_FROM_TEMPLATE",
+   "outlook.MicrosoftOutlookMail_CreateAndSendEmail"
+  ]
+ },
+ "agentdojo-workspace.delete_email": {
+  "legs": [
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "gmail.Gmail_DeleteDraftEmail",
+   "discord.webhooks.messages.delete",
+   "salesforce.SALESFORCE_REMOVE_NOTE_OBJECT_BY_ID"
+  ]
+ },
+ "agentdojo-workspace.get_unread_emails": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "generic": [
+   "untrusted"
+  ],
+  "neighbours": [
+   "gmail.Gmail_GetEmail",
+   "gmail.Gmail_ListEmails",
+   "outlook.MicrosoftOutlookMail_SharedMailboxGetEmail"
+  ]
+ },
+ "agentdojo-workspace.get_sent_emails": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "generic": [
+   "untrusted"
+  ],
+  "neighbours": [
+   "outlook.MicrosoftOutlookMail_SharedMailboxGetEmail",
+   "gmail.Gmail_GetEmail",
+   "gmail.Gmail_ListEmails"
+  ]
+ },
+ "agentdojo-workspace.get_received_emails": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "generic": [
+   "untrusted"
+  ],
+  "neighbours": [
+   "outlook.MicrosoftOutlookMail_SharedMailboxGetEmail",
+   "gmail.Gmail_GetEmail",
+   "gmail.Gmail_ListEmails"
+  ]
+ },
+ "agentdojo-workspace.get_draft_emails": {
+  "legs": [
+   "untrusted",
+   "private",
+   "acts"
+  ],
+  "generic": [
+   "untrusted"
+  ],
+  "neighbours": [
+   "gmail.Gmail_ListDraftEmails",
+   "outlook.MicrosoftOutlookMail_SharedMailboxSendDraftEmail",
+   "outlook.MicrosoftOutlookMail_SendDraftEmail"
+  ]
+ },
+ "agentdojo-workspace.search_emails": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "generic": [
+   "untrusted"
+  ],
+  "neighbours": [
+   "outlook.MicrosoftOutlookMail_SearchEmails",
+   "outlook.MicrosoftOutlookMail_SharedMailboxSearchEmails",
+   "salesforce.SALESFORCE_SEARCH_CONTACTS"
+  ]
+ },
+ "agentdojo-workspace.search_contacts_by_name": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_QUERY_CONTACTS_BY_NAME",
+   "salesforce.SALESFORCE_SEARCH_CONTACTS",
+   "salesforce.SALESFORCE_LIST_CONTACTS"
+  ]
+ },
+ "agentdojo-workspace.search_contacts_by_email": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "generic": [
+   "untrusted"
+  ],
+  "neighbours": [
+   "salesforce.SALESFORCE_SEARCH_CONTACTS",
+   "salesforce.SALESFORCE_LIST_CONTACTS",
+   "salesforce.SALESFORCE_QUERY_CONTACTS_BY_NAME"
+  ]
+ },
+ "agentdojo-workspace.get_current_day": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_FETCH_MODIFIED_OR_UNMODIFIED_SOBJECTS",
+   "googlesheets.GoogleSheets_GetSpreadsheetEditHistory",
+   "salesforce.SALESFORCE_RETRIEVE_NOTE_OBJECT_INFORMATION"
+  ]
+ },
+ "agentdojo-workspace.search_calendar_events": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "discord.guilds.scheduled_events.get",
+   "googlecalendar.GoogleCalendar_ListEvents",
+   "googlecalendar.GoogleCalendar_UpdateEvent"
+  ]
+ },
+ "agentdojo-workspace.get_day_calendar_events": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "discord.guilds.scheduled_events.get",
+   "googlecalendar.GoogleCalendar_ListEvents",
+   "googlecalendar.GoogleCalendar_ListCalendars"
+  ]
+ },
+ "agentdojo-workspace.create_calendar_event": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "googlecalendar.GoogleCalendar_CreateEvent",
+   "discord.guilds.scheduled_events.create",
+   "googlecalendar.GoogleCalendar_UpdateEvent"
+  ]
+ },
+ "agentdojo-workspace.cancel_calendar_event": {
+  "legs": [
+   "private",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "googlecalendar.GoogleCalendar_DeleteEvent",
+   "discord.guilds.scheduled_events.delete",
+   "googlecalendar.GoogleCalendar_UpdateEvent"
+  ]
+ },
+ "agentdojo-workspace.reschedule_calendar_event": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "googlecalendar.GoogleCalendar_UpdateEvent",
+   "discord.guilds.scheduled_events.get",
+   "discord.guilds.scheduled_events.create"
+  ]
+ },
+ "agentdojo-workspace.add_calendar_event_participants": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_ADD_CONTACT_TO_CAMPAIGN",
+   "googlecalendar.GoogleCalendar_UpdateEvent",
+   "discord.guilds.scheduled_events.create"
+  ]
+ },
+ "agentdojo-workspace.append_to_file": {
+  "legs": [
+   "private",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "dropbox.DROPBOX_MOVE_FILE_OR_FOLDER",
+   "googledrive.GoogleDrive_UploadFile",
+   "googledrive.GoogleDrive_MoveFile"
+  ]
+ },
+ "agentdojo-workspace.search_files_by_filename": {
+  "legs": [
+   "private"
+  ],
+  "generic": [
+   "private"
+  ],
+  "neighbours": [
+   "googledrive.GoogleDrive_SearchDrive",
+   "dropbox.DROPBOX_SEARCH_FILE_OR_FOLDER",
+   "googledrive.GoogleDrive_SearchFiles"
+  ]
+ },
+ "agentdojo-workspace.create_file": {
+  "legs": [
+   "private",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "googledrive.GoogleDrive_CreateFolder",
+   "linear.create_document",
+   "dropbox.DROPBOX_CREATE_FOLDER"
+  ]
+ },
+ "agentdojo-workspace.delete_file": {
+  "legs": [
+   "private",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "dropbox.DROPBOX_DELETE_FILE_OR_FOLDER",
+   "github.delete_file",
+   "googledrive.GoogleDrive_RenameFile"
+  ]
+ },
+ "agentdojo-workspace.get_file_by_id": {
+  "legs": [
+   "private"
+  ],
+  "generic": [
+   "private"
+  ],
+  "neighbours": [
+   "salesforce.SALESFORCE_GET_NOTE_BY_ID_WITH_FIELDS",
+   "salesforce.SALESFORCE_RETRIEVE_OPPORTUNITY_BY_ID_WITH_OPTIONAL_FIELDS",
+   "linear.get_document"
+  ]
+ },
+ "agentdojo-workspace.list_files": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "dropbox.DROPBOX_LIST_FOLDERS",
+   "linear.list_users",
+   "linear.list_projects"
+  ]
+ },
+ "agentdojo-workspace.share_file": {
+  "legs": [
+   "private",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "googledrive.GoogleDrive_ShareFile",
+   "googledrive.GoogleDrive_RemoveAllCollaborators",
+   "salesforce.SALESFORCE_MASS_TRANSFER_OWNERSHIP"
+  ]
+ },
+ "agentdojo-workspace.search_files": {
+  "legs": [
+   "private",
+   "external"
+  ],
+  "generic": [
+   "private"
+  ],
+  "neighbours": [
+   "notion.notion-search",
+   "googledrive.GoogleDrive_SearchFiles",
+   "googlesheets.GoogleSheets_SearchSpreadsheets"
+  ]
+ },
+ "agentdojo-travel.get_user_information": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_GET_USER_INFO",
+   "hubspot.get_user_details",
+   "slack.Slack_GetUsersInfo"
+  ]
+ },
+ "agentdojo-travel.get_all_hotels_in_city": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_LIST_PRICEBOOK_ENTRIES",
+   "salesforce.SALESFORCE_LIST_PRICEBOOKS",
+   "zendesk.ZENDESK_GET_ALL_ZENDESK_ORGANIZATIONS"
+  ]
+ },
+ "agentdojo-travel.get_hotels_prices": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_LIST_PRICEBOOKS",
+   "salesforce.SALESFORCE_LIST_PRICEBOOK_ENTRIES",
+   "Supabase.get_cost"
+  ]
+ },
+ "agentdojo-travel.get_rating_reviews_for_hotels": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "hubspot.submit_feedback",
+   "notion.notion-get-users",
+   "discord.channels.polls.answers.get"
+  ]
+ },
+ "agentdojo-travel.get_hotels_address": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "notion.notion-get-users",
+   "salesforce.SALESFORCE_GET_NOTE_BY_ID_WITH_FIELDS",
+   "salesforce.SALESFORCE_GET_CONTACT"
+  ]
+ },
+ "agentdojo-travel.get_all_restaurants_in_city": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "zendesk.ZENDESK_GET_ALL_ZENDESK_ORGANIZATIONS",
+   "brave.brave_place_search",
+   "Supabase.list_organizations"
+  ]
+ },
+ "agentdojo-travel.get_cuisine_type_for_restaurants": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_SEARCH_ACCOUNTS",
+   "github.list_issue_types",
+   "salesforce.SALESFORCE_LIST_OPPORTUNITIES"
+  ]
+ },
+ "agentdojo-travel.get_restaurants_address": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_QUERY_CONTACTS_BY_NAME",
+   "salesforce.SALESFORCE_GET_NOTE",
+   "salesforce.SALESFORCE_GET_CONTACT"
+  ]
+ },
+ "agentdojo-travel.get_rating_reviews_for_restaurants": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "hubspot.submit_feedback",
+   "discord.channels.polls.answers.get",
+   "salesforce.SALESFORCE_LIST_NOTES"
+  ]
+ },
+ "agentdojo-travel.get_dietary_restrictions_for_all_restaurants": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "hubspot.search_owners",
+   "Supabase.list_organizations",
+   "googlecalendar.GoogleCalendar_FindTimeSlotsWhenEveryoneIsFree"
+  ]
+ },
+ "agentdojo-travel.get_contact_information_for_restaurants": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_GET_CONTACT",
+   "salesforce.SALESFORCE_LIST_CONTACTS",
+   "salesforce.SALESFORCE_QUERY_CONTACTS_BY_NAME"
+  ]
+ },
+ "agentdojo-travel.get_price_for_restaurants": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_LIST_PRICEBOOKS",
+   "stripe.list_prices",
+   "salesforce.SALESFORCE_LIST_PRICEBOOK_ENTRIES"
+  ]
+ },
+ "agentdojo-travel.check_restaurant_opening_hours": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "googlecalendar.GoogleCalendar_FindTimeSlotsWhenEveryoneIsFree",
+   "salesforce.SALESFORCE_SEARCH_OPPORTUNITIES",
+   "github.get_copilot_job_status"
+  ]
+ },
+ "agentdojo-travel.get_all_car_rental_companies_in_city": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_SEARCH_ACCOUNTS",
+   "zendesk.ZENDESK_GET_ALL_ZENDESK_ORGANIZATIONS",
+   "salesforce.SALESFORCE_LIST_PRICEBOOK_ENTRIES"
+  ]
+ },
+ "agentdojo-travel.get_car_types_available": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_SEARCH_ACCOUNTS",
+   "hubspot.get_properties",
+   "hubspot.get_crm_objects"
+  ]
+ },
+ "agentdojo-travel.get_rating_reviews_for_car_rental": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "hubspot.submit_feedback",
+   "salesforce.SALESFORCE_SEARCH_ACCOUNTS",
+   "salesforce.SALESFORCE_LIST_CAMPAIGNS"
+  ]
+ },
+ "agentdojo-travel.get_car_fuel_options": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_GET_CAMPAIGN",
+   "salesforce.SALESFORCE_CLONE_OPPORTUNITY_WITH_PRODUCTS",
+   "salesforce.SALESFORCE_GET_DASHBOARD"
+  ]
+ },
+ "agentdojo-travel.get_car_rental_address": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_SEARCH_ACCOUNTS",
+   "salesforce.SALESFORCE_GET_CONTACT",
+   "salesforce.SALESFORCE_SEARCH_CONTACTS"
+  ]
+ },
+ "agentdojo-travel.get_car_price_per_day": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_LIST_PRICEBOOK_ENTRIES",
+   "salesforce.SALESFORCE_LIST_PRICEBOOKS",
+   "stripe.list_prices"
+  ]
+ },
+ "agentdojo-travel.create_calendar_event": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "googlecalendar.GoogleCalendar_CreateEvent",
+   "googlecalendar.GoogleCalendar_UpdateEvent",
+   "discord.guilds.scheduled_events.create"
+  ]
+ },
+ "agentdojo-travel.search_calendar_events": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "googlecalendar.GoogleCalendar_ListEvents",
+   "googlecalendar.GoogleCalendar_UpdateEvent",
+   "googlecalendar.GoogleCalendar_ListCalendars"
+  ]
+ },
+ "agentdojo-travel.get_day_calendar_events": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "googlecalendar.GoogleCalendar_ListEvents",
+   "googlecalendar.GoogleCalendar_ListCalendars",
+   "discord.guilds.scheduled_events.get"
+  ]
+ },
+ "agentdojo-travel.cancel_calendar_event": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "googlecalendar.GoogleCalendar_DeleteEvent",
+   "googlecalendar.GoogleCalendar_UpdateEvent",
+   "googlecalendar.GoogleCalendar_RespondToEvent"
+  ]
+ },
+ "agentdojo-travel.reserve_hotel": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "Supabase.get_organization",
+   "hubspot.get_user_details",
+   "notion.notion-get-users"
+  ]
+ },
+ "agentdojo-travel.reserve_car_rental": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "hubspot.submit_feedback",
+   "salesforce.SALESFORCE_FETCH_ACCOUNT_BY_ID_WITH_QUERY",
+   "hubspot.search_owners"
+  ]
+ },
+ "agentdojo-travel.reserve_restaurant": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "Supabase.get_organization",
+   "hubspot.submit_feedback",
+   "googlecalendar.GoogleCalendar_FindTimeSlotsWhenEveryoneIsFree"
+  ]
+ },
+ "agentdojo-travel.get_flight_information": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "zendesk.ZENDESK_GET_ZENDESK_TICKET_BY_ID",
+   "salesforce.SALESFORCE_GET_USER_INFO",
+   "salesforce.SALESFORCE_GET_CONTACT"
+  ]
+ },
+ "agentdojo-travel.send_email": {
+  "legs": [
+   "external",
+   "acts"
+  ],
+  "generic": [
+   "external"
+  ],
+  "neighbours": [
+   "salesforce.SALESFORCE_SEND_EMAIL",
+   "salesforce.SALESFORCE_SEND_EMAIL_FROM_TEMPLATE",
+   "outlook.MicrosoftOutlookMail_CreateAndSendEmail"
+  ]
+ },
+ "agentdojo-banking.get_iban": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_GET_ACCOUNT",
+   "salesforce.SALESFORCE_FETCH_ACCOUNT_BY_ID_WITH_QUERY",
+   "salesforce.SALESFORCE_GET_NOTE_BY_ID_WITH_FIELDS"
+  ]
+ },
+ "agentdojo-banking.send_money": {
+  "legs": [
+   "external",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_SEND_EMAIL",
+   "salesforce.SALESFORCE_SEND_EMAIL_FROM_TEMPLATE",
+   "salesforce.SALESFORCE_SEND_MASS_EMAIL"
+  ]
+ },
+ "agentdojo-banking.schedule_transaction": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "discord.guilds.scheduled_events.create",
+   "github.create_pull_request_with_copilot",
+   "discord.guilds.scheduled_events.update"
+  ]
+ },
+ "agentdojo-banking.update_scheduled_transaction": {
+  "legs": [
+   "private",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "discord.guilds.scheduled_events.update",
+   "salesforce.SALESFORCE_UPDATE_TASK",
+   "salesforce.SALESFORCE_UPDATE_OPPORTUNITY_BY_ID"
+  ]
+ },
+ "agentdojo-banking.get_balance": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "stripe.retrieve_balance",
+   "salesforce.SALESFORCE_GET_ACCOUNT",
+   "salesforce.SALESFORCE_FETCH_ACCOUNT_BY_ID_WITH_QUERY"
+  ]
+ },
+ "agentdojo-banking.get_most_recent_transactions": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "github.get_latest_release",
+   "stripe.list_payment_intents",
+   "googlesheets.Arcade_ListApps"
+  ]
+ },
+ "agentdojo-banking.get_scheduled_transactions": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "discord.guilds.scheduled_events.get",
+   "stripe.list_payment_intents",
+   "discord.guilds.scheduled_events.list"
+  ]
+ },
+ "agentdojo-banking.read_file": {
+  "legs": [
+   "private"
+  ],
+  "generic": [
+   "private"
+  ],
+  "neighbours": [
+   "dropbox.DROPBOX_READ_FILE",
+   "github.get_file_contents",
+   "github.pull_request_read"
+  ]
+ },
+ "agentdojo-banking.get_user_info": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "salesforce.SALESFORCE_GET_USER_INFO",
+   "hubspot.get_user_details",
+   "slack.Slack_GetUsersInfo"
+  ]
+ },
+ "agentdojo-banking.update_password": {
+  "legs": [
+   "private",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "discord.guilds.members.me.update",
+   "discord.webhooks.update",
+   "discord.guilds.members.by_user_id.update"
+  ]
+ },
+ "agentdojo-banking.update_user_info": {
+  "legs": [
+   "private",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "discord.guilds.members.me.update",
+   "discord.guilds.members.by_user_id.update",
+   "salesforce.SALESFORCE_UPDATE_ACCOUNT_OBJECT_BY_ID"
+  ]
+ },
+ "agentdojo-slack.get_channels": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "slack.Slack_ListConversations",
+   "slack.Slack_GetUsersInConversation",
+   "discord.channels.webhooks.list"
+  ]
+ },
+ "agentdojo-slack.add_user_to_channel": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "slack.Slack_InviteUsersToChannel",
+   "discord.channels.thread_members.update",
+   "discord.channels.thread_members.me.update"
+  ]
+ },
+ "agentdojo-slack.read_channel_messages": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "generic": [
+   "untrusted",
+   "private"
+  ],
+  "neighbours": [
+   "slack.Slack_GetThreadMessages",
+   "slack.Slack_ListConversations",
+   "slack.Slack_GetConversationMetadata"
+  ]
+ },
+ "agentdojo-slack.read_inbox": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "generic": [
+   "untrusted"
+  ],
+  "neighbours": [
+   "slack.Slack_GetThreadMessages",
+   "slack.Slack_ListUsers",
+   "slack.Slack_GetUsersInfo"
+  ]
+ },
+ "agentdojo-slack.send_direct_message": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "generic": [
+   "external"
+  ],
+  "neighbours": [
+   "slack.Slack_SendMessage",
+   "slack.Slack_InviteUsersToChannel",
+   "discord.channels.messages.create"
+  ]
+ },
+ "agentdojo-slack.send_channel_message": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "generic": [
+   "external"
+  ],
+  "neighbours": [
+   "discord.channels.messages.create",
+   "slack.Slack_SendMessage",
+   "discord.channels.messages.update"
+  ]
+ },
+ "agentdojo-slack.get_users_in_channel": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "slack.Slack_GetUsersInConversation",
+   "slack.Slack_ListUsers",
+   "slack.Slack_GetUsersInfo"
+  ]
+ },
+ "agentdojo-slack.invite_user_to_slack": {
+  "legs": [
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "slack.Slack_InviteUsersToChannel",
+   "discord.webhooks.slack.create",
+   "slack.Slack_GetUsersInfo"
+  ]
+ },
+ "agentdojo-slack.remove_user_from_slack": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "discord.guilds.members.roles.delete",
+   "discord.channels.thread_members.delete",
+   "discord.applications.guilds.commands.delete"
+  ]
+ },
+ "agentdojo-slack.get_webpage": {
+  "legs": [
+   "private"
+  ],
+  "generic": [],
+  "neighbours": [
+   "exa.web_fetch_exa",
+   "discord.webhooks.slack.create",
+   "Supabase.get_project_url"
+  ]
+ },
+ "agentdojo-slack.post_webpage": {
+  "legs": [
+   "private",
+   "external",
+   "acts"
+  ],
+  "generic": [],
+  "neighbours": [
+   "discord.webhooks.slack.create",
+   "hubspot.submit_feedback",
+   "slack.Slack_GetThreadMessages"
+  ]
+ }
+}

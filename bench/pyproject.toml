@@ -1,0 +1,12 @@
+[project]
+name = "reach-bench"
+version = "0.1.0"
+description = "AgentDojo benchmark harness for Reach (separate env: AgentDojo pulls heavy LLM SDKs)"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "agentdojo==0.1.35",
+    "reach[vector]",
+]
+
+[tool.uv.sources]
+reach = { path = "..", editable = true }

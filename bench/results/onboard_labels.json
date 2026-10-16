@@ -1,0 +1,446 @@
+{
+ "agentdojo-workspace.send_email": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-workspace.delete_email": {
+  "untrusted": true,
+  "private": true,
+  "external": false,
+  "acts": true
+ },
+ "agentdojo-workspace.get_unread_emails": {
+  "untrusted": true,
+  "private": true,
+  "external": false,
+  "acts": true
+ },
+ "agentdojo-workspace.get_sent_emails": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-workspace.get_received_emails": {
+  "untrusted": true,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-workspace.get_draft_emails": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-workspace.search_emails": {
+  "untrusted": true,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-workspace.search_contacts_by_name": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-workspace.search_contacts_by_email": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-workspace.get_current_day": {
+  "untrusted": false,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-workspace.search_calendar_events": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-workspace.get_day_calendar_events": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-workspace.create_calendar_event": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-workspace.cancel_calendar_event": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-workspace.reschedule_calendar_event": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-workspace.add_calendar_event_participants": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-workspace.append_to_file": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": true
+ },
+ "agentdojo-workspace.search_files_by_filename": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-workspace.create_file": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": true
+ },
+ "agentdojo-workspace.delete_file": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": true
+ },
+ "agentdojo-workspace.get_file_by_id": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-workspace.list_files": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-workspace.share_file": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-workspace.search_files": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_user_information": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_all_hotels_in_city": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_hotels_prices": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_rating_reviews_for_hotels": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_hotels_address": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_all_restaurants_in_city": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_cuisine_type_for_restaurants": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_restaurants_address": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_rating_reviews_for_restaurants": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_dietary_restrictions_for_all_restaurants": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_contact_information_for_restaurants": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_price_for_restaurants": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.check_restaurant_opening_hours": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_all_car_rental_companies_in_city": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_car_types_available": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_rating_reviews_for_car_rental": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_car_fuel_options": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_car_rental_address": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_car_price_per_day": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.create_calendar_event": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-travel.search_calendar_events": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.get_day_calendar_events": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.cancel_calendar_event": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-travel.reserve_hotel": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-travel.reserve_car_rental": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-travel.reserve_restaurant": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-travel.get_flight_information": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-travel.send_email": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-banking.get_iban": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-banking.send_money": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-banking.schedule_transaction": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-banking.update_scheduled_transaction": {
+  "untrusted": false,
+  "private": true,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-banking.get_balance": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-banking.get_most_recent_transactions": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-banking.get_scheduled_transactions": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-banking.read_file": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-banking.get_user_info": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-banking.update_password": {
+  "untrusted": false,
+  "private": false,
+  "external": false,
+  "acts": true
+ },
+ "agentdojo-banking.update_user_info": {
+  "untrusted": false,
+  "private": false,
+  "external": false,
+  "acts": true
+ },
+ "agentdojo-slack.get_channels": {
+  "untrusted": false,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-slack.add_user_to_channel": {
+  "untrusted": false,
+  "private": false,
+  "external": false,
+  "acts": true
+ },
+ "agentdojo-slack.read_channel_messages": {
+  "untrusted": false,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-slack.read_inbox": {
+  "untrusted": true,
+  "private": true,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-slack.send_direct_message": {
+  "untrusted": false,
+  "private": false,
+  "external": false,
+  "acts": true
+ },
+ "agentdojo-slack.send_channel_message": {
+  "untrusted": false,
+  "private": false,
+  "external": false,
+  "acts": true
+ },
+ "agentdojo-slack.get_users_in_channel": {
+  "untrusted": false,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-slack.invite_user_to_slack": {
+  "untrusted": false,
+  "private": false,
+  "external": true,
+  "acts": true
+ },
+ "agentdojo-slack.remove_user_from_slack": {
+  "untrusted": false,
+  "private": false,
+  "external": false,
+  "acts": true
+ },
+ "agentdojo-slack.get_webpage": {
+  "untrusted": true,
+  "private": false,
+  "external": false,
+  "acts": false
+ },
+ "agentdojo-slack.post_webpage": {
+  "untrusted": false,
+  "private": false,
+  "external": true,
+  "acts": true
+ }
+}

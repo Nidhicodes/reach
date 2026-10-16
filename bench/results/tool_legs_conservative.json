@@ -1,0 +1,520 @@
+{
+ "agentdojo-workspace.send_email": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.delete_email": {
+  "legs": [
+   "untrusted",
+   "private",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.get_unread_emails": {
+  "legs": [
+   "untrusted",
+   "private",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.get_sent_emails": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.get_received_emails": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.get_draft_emails": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.search_emails": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.search_contacts_by_name": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.search_contacts_by_email": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.get_current_day": {
+  "legs": [],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.search_calendar_events": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.get_day_calendar_events": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.create_calendar_event": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.cancel_calendar_event": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.reschedule_calendar_event": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.add_calendar_event_participants": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.append_to_file": {
+  "legs": [
+   "untrusted",
+   "private",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.search_files_by_filename": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.create_file": {
+  "legs": [
+   "untrusted",
+   "private",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.delete_file": {
+  "legs": [
+   "untrusted",
+   "private",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.get_file_by_id": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.list_files": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.share_file": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-workspace.search_files": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_user_information": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_all_hotels_in_city": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_hotels_prices": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_rating_reviews_for_hotels": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_hotels_address": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_all_restaurants_in_city": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_cuisine_type_for_restaurants": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_restaurants_address": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_rating_reviews_for_restaurants": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_dietary_restrictions_for_all_restaurants": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_contact_information_for_restaurants": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_price_for_restaurants": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.check_restaurant_opening_hours": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_all_car_rental_companies_in_city": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_car_types_available": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_rating_reviews_for_car_rental": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_car_fuel_options": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_car_rental_address": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_car_price_per_day": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.create_calendar_event": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.search_calendar_events": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_day_calendar_events": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.cancel_calendar_event": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.reserve_hotel": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.reserve_car_rental": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.reserve_restaurant": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.get_flight_information": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-travel.send_email": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-banking.get_iban": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-banking.send_money": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-banking.schedule_transaction": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-banking.update_scheduled_transaction": {
+  "legs": [
+   "untrusted",
+   "private",
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-banking.get_balance": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-banking.get_most_recent_transactions": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-banking.get_scheduled_transactions": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-banking.read_file": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-banking.get_user_info": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-banking.update_password": {
+  "legs": [
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-banking.update_user_info": {
+  "legs": [
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-slack.get_channels": {
+  "legs": [],
+  "source": "conservative"
+ },
+ "agentdojo-slack.add_user_to_channel": {
+  "legs": [
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-slack.read_channel_messages": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-slack.read_inbox": {
+  "legs": [
+   "untrusted",
+   "private"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-slack.send_direct_message": {
+  "legs": [
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-slack.send_channel_message": {
+  "legs": [
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-slack.get_users_in_channel": {
+  "legs": [],
+  "source": "conservative"
+ },
+ "agentdojo-slack.invite_user_to_slack": {
+  "legs": [
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-slack.remove_user_from_slack": {
+  "legs": [
+   "acts"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-slack.get_webpage": {
+  "legs": [
+   "untrusted"
+  ],
+  "source": "conservative"
+ },
+ "agentdojo-slack.post_webpage": {
+  "legs": [
+   "external",
+   "acts"
+  ],
+  "source": "conservative"
+ }
+}

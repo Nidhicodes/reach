@@ -149,7 +149,7 @@ def api(method: str, path: str, q: dict, body: dict) -> dict:
             r["file"] = f.name
             r["diff"] = r["diff"].replace(str(SAMPLE_DIR) + "/", "")
             out.append({k: v for k, v in r.items() if not k.startswith("_")})
-        return {"configs": out, "applied": False, "note": "dry run; apply with reach-harden <file> --apply"}
+        return {"configs": out, "applied": False, "note": "Apply one with: reach-harden <file> --apply"}
     if method == "POST" and path == "/api/gateway/run":
         from reach import gateway_demo
 
