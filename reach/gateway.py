@@ -37,27 +37,67 @@ from mcp.server.stdio import stdio_server
 
 from reach import estate
 from reach import queries as Q
+from reach import schema
 
 SEP = "__"
 
+# Legs of every call earlier in this task that did (or may still) run. 'pending' calls
+# are in flight in another gateway right now; counting them is the conservative choice.
 TASK_LEGS = """
-MATCH (:Task {id: $task})<-[:IN_TASK]-(c:Call {verdict: 'allowed'})-[:CALLED]->(t:Tool)-[e:INGESTS|READS|SENDS_TO]->(n)
+MATCH (:Task {id: $task})<-[:IN_TASK]-(c:Call)-[:CALLED]->(t:Tool)-[e:INGESTS|READS|SENDS_TO]->(n)
+WHERE c.seq < $seq AND c.verdict IN ['allowed', 'pending', 'audit-would-block', 'approved']
 RETURN c.seq AS seq, c.agent AS agent, t.name AS tool, type(e) AS leg, n.name AS target
 ORDER BY seq
 """
-TASK_AGENTS = """
-MATCH (:Task {id: $task})<-[:IN_TASK]-(c:Call)
-RETURN c.agent AS agent, max(c.seq) AS last ORDER BY last DESC
-"""
 TOOL_LEGS = "MATCH (t:Tool {name: $tool})-[e:INGESTS|READS|SENDS_TO]->(n) RETURN type(e) AS leg, n.name AS target"
-RECORD = """
+# Reserve a sequence number and record the call as 'pending' in ONE write query.
+# FalkorDB runs write queries on a graph one at a time, so two gateway processes can
+# never take the same seq, and whichever call reserves second sees the first one. That
+# closes the check-then-act race a per-process guard has.
+RESERVE = """
 MERGE (k:Task {id: $task})
-WITH k MATCH (t:Tool {name: $tool})
-CREATE (c:Call {seq: $seq, agent: $agent, at: $at, verdict: $verdict, reason: $reason, args: $args})
+WITH k
+OPTIONAL MATCH (k)<-[:IN_TASK]-(p:Call)
+WITH k, coalesce(max(p.seq), 0) + 1 AS seq
+OPTIONAL MATCH (k)<-[:IN_TASK]-(prev:Call {seq: seq - 1})
+WITH k, seq, prev.agent AS prev_agent
+MATCH (t:Tool {name: $tool})
+CREATE (c:Call {task: $task, seq: seq, agent: $agent, at: $at, verdict: 'pending', reason: '', args: $args})
 CREATE (c)-[:IN_TASK]->(k)
 CREATE (c)-[:CALLED]->(t)
+RETURN seq, prev_agent
 """
-NEXT_SEQ = "OPTIONAL MATCH (:Task {id: $task})<-[:IN_TASK]-(c:Call) RETURN coalesce(max(c.seq), 0) + 1 AS seq"
+FINALISE = """
+MATCH (:Task {id: $task})<-[:IN_TASK]-(c:Call {seq: $seq})
+SET c.verdict = $verdict, c.reason = $reason
+"""
+# Human-in-the-loop: an Approval node the UI (or `reach approve`) decides, from any process.
+ASK = """
+MATCH (:Task {id: $task})<-[:IN_TASK]-(c:Call {seq: $seq})
+CREATE (a:Approval {id: $id, status: 'pending', at: $at, task: $task, agent: $agent, tool: $tool, why: $why})
+CREATE (a)-[:FOR]->(c)
+"""
+APPROVAL = "MATCH (a:Approval {id: $id}) RETURN a.status AS status, a.by AS by"
+DECIDE = """
+MATCH (a:Approval {id: $id}) WHERE a.status = 'pending'
+SET a.status = $status, a.by = $by, a.decided_at = $at
+RETURN a.id AS id, a.status AS status
+"""
+PENDING = """
+MATCH (a:Approval {status: 'pending'})
+RETURN a.id AS id, a.task AS task, a.agent AS agent, a.tool AS tool, a.why AS why, a.at AS at
+ORDER BY at
+"""
+
+
+def decide(g, approval_id: str, approve: bool, by: str = "human") -> dict | None:
+    rows = Q.rows(g.query(DECIDE, {"id": approval_id, "status": "approved" if approve else "denied",
+                                   "by": by, "at": int(time.time() * 1000)}))
+    return rows[0] if rows else None
+
+
+def pending_approvals(g) -> list[dict]:
+    return Q.ro(g, PENDING)
 
 
 def load_config(path: str) -> dict:
@@ -87,11 +127,16 @@ def verdict(prior: list[dict], next_legs: list[dict], tool: str) -> dict:
 
 
 class Gateway:
-    def __init__(self, g, agent: str, upstreams: dict, task: str | None = None, mode: str = "block"):
+    """mode: 'block' (default), 'audit' (log only) or 'ask' (hold the call for a human)."""
+
+    def __init__(self, g, agent: str, upstreams: dict, task: str | None = None, mode: str = "block",
+                 ask_timeout: float = 120.0, poll: float = 0.5):
         self.g, self.agent, self.upstreams, self.mode = g, agent, upstreams, mode
+        self.ask_timeout, self.poll = ask_timeout, poll
         self.task = task or os.environ.get("REACH_TASK") or f"task-{uuid.uuid4().hex[:8]}"
         self.clients: dict[str, Client] = {}
         self.tools: dict[str, tuple[str, types.Tool]] = {}  # exposed name -> (server, upstream tool)
+        schema.ensure(g)
 
     async def open(self, stack: AsyncExitStack) -> None:
         for name, spec in self.upstreams.items():
@@ -111,42 +156,79 @@ class Gateway:
                                   input_schema=t.input_schema, annotations=t.annotations))
         return out
 
-    def check(self, exposed: str) -> dict:
+    def check(self, exposed: str, args: dict | None = None) -> dict:
+        """Reserve this call in the task ledger, then decide it against every earlier call."""
         server, t = self.tools[exposed]
         tool = estate.qualified(server, t.name)
-        prior = Q.ro(self.g, TASK_LEGS, {"task": self.task})
+        r = schema.write(self.g, RESERVE, {"task": self.task, "tool": tool, "agent": self.agent,
+                                          "at": int(time.time() * 1000),
+                                           "args": json.dumps(args or {})[:500]})[0]
+        seq = r["seq"]
+        # learn the handoff: if another agent made the previous call on this task, it handed off to us
+        if r["prev_agent"] and r["prev_agent"] != self.agent:
+            estate.delegate(self.g, r["prev_agent"], self.agent, observed=True)
+        prior = Q.ro(self.g, TASK_LEGS, {"task": self.task, "seq": seq})
         nxt = Q.ro(self.g, TOOL_LEGS, {"tool": tool})
         v = verdict(prior, nxt, tool)
-        v["tool"] = tool
+        v.update(tool=tool, seq=seq)
         return v
 
-    def _record(self, tool: str, v: str, reason: str, args: dict) -> None:
-        # learn the handoff: if another agent made the latest call on this task, it handed off to us
-        agents = Q.ro(self.g, TASK_AGENTS, {"task": self.task})
-        if agents and agents[0]["agent"] != self.agent:
-            estate.delegate(self.g, agents[0]["agent"], self.agent, observed=True)
-        seq = Q.ro(self.g, NEXT_SEQ, {"task": self.task})[0]["seq"]
-        self.g.query(RECORD, {"task": self.task, "tool": tool, "seq": seq, "agent": self.agent,
-                              "at": int(time.time() * 1000), "verdict": v, "reason": reason,
-                              "args": json.dumps(args)[:500]})
+    def _finalise(self, seq: int, v: str, reason: str = "") -> None:
+        self.g.query(FINALISE, {"task": self.task, "seq": seq, "verdict": v, "reason": reason})
+
+    async def _ask(self, v: dict) -> str:
+        """Hold the call until a human decides it (UI / `reach approve`), from any process."""
+        import anyio
+
+        aid = f"ap-{uuid.uuid4().hex[:8]}"
+        p = v["path"]
+        why = (f"untrusted {p['untrusted'][0]} via {p['untrusted'][1]}, private {p['private'][0]} via "
+               f"{p['private'][1]}, now {p['sink'][1]} -> {p['sink'][0]}")
+        self.g.query(ASK, {"task": self.task, "seq": v["seq"], "id": aid, "at": int(time.time() * 1000),
+                           "agent": self.agent, "tool": v["tool"], "why": why})
+        v["approval"] = aid
+        deadline = time.monotonic() + self.ask_timeout
+        while time.monotonic() < deadline:
+            st = Q.ro(self.g, APPROVAL, {"id": aid})
+            if st and st[0]["status"] != "pending":
+                return st[0]["status"]
+            await anyio.sleep(self.poll)
+        decide(self.g, aid, False, by="timeout")
+        return "timeout"
+
+    def _blocked(self, v: dict, reason: str) -> types.CallToolResult:
+        p = v["path"]
+        msg = (f"BLOCKED by Reach: {reason}. Earlier in task {self.task}, untrusted "
+               f"{p['untrusted'][0]} entered via {p['untrusted'][1]} and private {p['private'][0]} "
+               f"was read via {p['private'][1]}; {p['sink'][1]} would send to {p['sink'][0]}. "
+               "Do not retry. Ask the user to review the task.")
+        return types.CallToolResult(content=[types.TextContent(text=msg)], is_error=True,
+                                    structured_content={"reach": v})
 
     async def call(self, exposed: str, args: dict) -> types.CallToolResult:
         if exposed not in self.tools:
             return types.CallToolResult(content=[types.TextContent(text=f"Reach: unknown tool {exposed}")], is_error=True)
-        v = self.check(exposed)
-        if v["verdict"] == "blocked" and self.mode == "block":
-            self._record(v["tool"], "blocked", v["reason"], args)
-            p = v["path"]
-            msg = (f"BLOCKED by Reach: {v['reason']}. Earlier in task {self.task}, untrusted "
-                   f"{p['untrusted'][0]} entered via {p['untrusted'][1]} and private {p['private'][0]} "
-                   f"was read via {p['private'][1]}; {p['sink'][1]} would send to {p['sink'][0]}. "
-                   "Do not retry. Ask the user to review the task.")
-            return types.CallToolResult(content=[types.TextContent(text=msg)], is_error=True,
-                                        structured_content={"reach": v})
+        v = self.check(exposed, args)
+        if v["verdict"] == "blocked":
+            if self.mode == "block":
+                self._finalise(v["seq"], "blocked", v["reason"])
+                return self._blocked(v, v["reason"])
+            if self.mode == "ask":
+                decision = await self._ask(v)
+                if decision != "approved":
+                    self._finalise(v["seq"], "denied", f"{v['reason']}; human said {decision}")
+                    return self._blocked(v, f"{v['reason']} (held for approval: {decision})")
+                self._finalise(v["seq"], "approved", v["reason"])
+            else:
+                self._finalise(v["seq"], "audit-would-block", v["reason"])
         server, t = self.tools[exposed]
-        res = await self.clients[server].call_tool(t.name, args)
-        self._record(v["tool"], "allowed" if v["verdict"] == "allowed" else "audit-would-block",
-                     v.get("reason", ""), args)
+        try:
+            res = await self.clients[server].call_tool(t.name, args)
+        except Exception as e:
+            self._finalise(v["seq"], "error", str(e)[:200])
+            raise
+        if v["verdict"] == "allowed":
+            self._finalise(v["seq"], "allowed")
         return res
 
 
@@ -174,10 +256,13 @@ def main() -> None:
     ap.add_argument("--agent", required=True)
     ap.add_argument("--task")
     ap.add_argument("--audit", action="store_true", help="log would-block calls but let them through")
+    ap.add_argument("--ask", action="store_true", help="hold would-block calls for a human decision")
+    ap.add_argument("--ask-timeout", type=float, default=120.0)
     a = ap.parse_args()
     from reach.db import connect
 
-    gw = Gateway(connect(), a.agent, load_config(a.config), a.task, "audit" if a.audit else "block")
+    mode = "audit" if a.audit else "ask" if a.ask else "block"
+    gw = Gateway(connect(), a.agent, load_config(a.config), a.task, mode, ask_timeout=a.ask_timeout)
     server = build_server(gw)
 
     import anyio

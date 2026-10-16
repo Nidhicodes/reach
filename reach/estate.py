@@ -14,6 +14,7 @@ distinct. Connecting a server grants every tool it lists; that is how MCP client
 
 from __future__ import annotations
 
+from reach import schema
 from reach.classify import GENERIC_RULES, RULES, classify
 
 LABEL = {"INGESTS": "Source", "READS": "Data", "SENDS_TO": "Sink"}
@@ -27,14 +28,14 @@ def qualified(server: str, tool: str) -> str:
 def ensure_targets(g) -> None:
     for leg, name in sorted({(r.leg, r.target) for r in RULES + GENERIC_RULES}):
         lab = LABEL[leg]
-        g.query(f"MERGE (n:{lab} {{name: $n}}) ON CREATE SET {PROPS[lab]}", {"n": name})
+        schema.write(g, f"MERGE (n:{lab} {{name: $n}}) ON CREATE SET {PROPS[lab]}", {"n": name})
 
 
 def register(g, agent: str, server: str, tools: list[dict], source: str = "", owner: str = "") -> dict:
     """Agent `agent` is connected to `server`, which lists `tools` [{name, description}]."""
     ensure_targets(g)
     scope = f"conn:{server}"
-    g.query(
+    schema.write(g,
         """
         MERGE (a:Agent {name: $a}) ON CREATE SET a.source = $src, a.owner = $o
         MERGE (s:Server {name: $s})
@@ -51,7 +52,7 @@ def register(g, agent: str, server: str, tools: list[dict], source: str = "", ow
                      "auto": bool(t.get("auto_approved"))})
         for r in classify(server, t.get("classify_as") or t["name"], fallback=True):
             legs.append({"q": q, "leg": r.leg, "target": r.target, "rule": r.id, "why": r.why})
-    g.query(
+    schema.write(g,
         """
         MATCH (a:Agent {name: $a}), (s:Server {name: $s})-[:GATED_BY]->(sc:Scope)
         UNWIND $rows AS r
@@ -66,7 +67,7 @@ def register(g, agent: str, server: str, tools: list[dict], source: str = "", ow
     for leg, lab in LABEL.items():
         sel = [x for x in legs if x["leg"] == leg]
         if sel:
-            g.query(
+            schema.write(g,
                 f"UNWIND $rows AS x MATCH (t:Tool {{name: x.q}}), (n:{lab} {{name: x.target}}) "
                 f"MERGE (t)-[e:{leg}]->(n) ON CREATE SET e.rule = x.rule, e.why = x.why",
                 {"rows": sel},
@@ -75,7 +76,7 @@ def register(g, agent: str, server: str, tools: list[dict], source: str = "", ow
 
 
 def delegate(g, src: str, dst: str, observed: bool = False) -> None:
-    g.query(
+    schema.write(g,
         "MATCH (a:Agent {name: $a}), (b:Agent {name: $b}) MERGE (a)-[d:DELEGATES_TO]->(b) "
         "ON CREATE SET d.observed = $o",
         {"a": src, "b": dst, "o": observed},
