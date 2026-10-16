@@ -142,6 +142,25 @@ def api(method: str, path: str, q: dict, body: dict) -> dict:
 
         use_llm = bool(body.get("llm")) and bool(os.environ.get("REACH_LLM_BASE_URL"))
         return gateway_demo.run(graph("gateway"), str(body.get("scenario", "")), use_llm)
+    if method == "POST" and path == "/api/gateway/ask":
+        from reach import gateway_demo
+
+        return gateway_demo.start_ask(graph("gateway"), str(body.get("scenario", "")))
+    if path == "/api/gateway/ask-status":
+        from reach import gateway_demo
+
+        return gateway_demo.ask_status(q.get("job", ""))
+    if path == "/api/approvals":
+        from reach.gateway import pending_approvals
+
+        return {"pending": pending_approvals(graph("gateway"))}
+    if method == "POST" and path == "/api/approvals/decide":
+        from reach.gateway import decide
+
+        r = decide(graph("gateway"), str(body.get("id", "")), bool(body.get("approve")), by="ui")
+        if not r:
+            raise ValueError("no pending approval with that id")
+        return r
     if path == "/api/gateway/ledger":
         from reach import gateway_demo
 

@@ -63,3 +63,27 @@ def test_public_mode_refuses_this_machine(monkeypatch):
 def test_empty_gateway_estate_reads_cleanly():
     assert call("/api/estate", {"estate": "gateway"})["nodes"] == []
     assert call("/api/paths", {"estate": "gateway"})["outcome"] == "not_in_graph"
+
+
+def test_ask_mode_round_trip_through_the_api():
+    import time
+
+    from reach import web
+
+    r = web.api("POST", "/api/gateway/ask", {}, {"scenario": "cross-agent"})
+    ap = None
+    for _ in range(200):
+        pend = [p for p in web.api("GET", "/api/approvals", {}, {})["pending"] if p["task"] == r["task"]]
+        if pend:
+            ap = pend[0]
+            break
+        time.sleep(0.05)
+    assert ap and ap["agent"] == "sales-assistant"
+    web.api("POST", "/api/approvals/decide", {}, {"id": ap["id"], "approve": False})
+    for _ in range(200):
+        st = web.api("GET", "/api/gateway/ask-status", {"job": r["job"]}, {})
+        if st["status"] != "running":
+            break
+        time.sleep(0.05)
+    assert st["status"] == "done" and st["exfiltrated"] == []
+    assert st["events"][-1]["blocked"]

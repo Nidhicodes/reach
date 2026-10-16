@@ -269,8 +269,47 @@ async function loadLedger() {
   const t = el("table", {}, el("tr", {}, ...["task", "#", "agent", "tool", "verdict"].map((h) => el("th", {}, h))));
   r.calls.slice(0, 60).forEach((c) => t.append(el("tr", {},
     el("td", {}, c.task), el("td", {}, String(c.seq)), el("td", { class: "k-Agent" }, c.agent), el("td", {}, c.tool),
-    el("td", { class: c.verdict === "blocked" ? "BLOCKED" : c.verdict === "audit-would-block" ? "k-Source" : "" }, c.verdict))));
+    el("td", { class: ["blocked", "denied"].includes(c.verdict) ? "BLOCKED" : c.verdict === "audit-would-block" ? "k-Source" : "" }, c.verdict))));
   $("#ledger").replaceChildren(t);
+}
+
+// ---------------------------------------------------------------- ask a human
+// The held call waits in another thread on the server; its Approval node lives in the
+// graph, so any process (this UI, `reach.approve`, a second gateway) can decide it.
+async function runAsk(scn) {
+  const box = $("#ask");
+  box.replaceChildren(el("p", { class: "muted" }, "Running with the gateway in ask mode..."));
+  const { job, task } = await api("/api/gateway/ask", { scenario: scn });
+  for (let i = 0; i < 240; i++) {
+    const st = await api(`/api/gateway/ask-status?job=${job}`);
+    if (st.status !== "running") { showAskResult(box, st, task); return; }
+    const { pending } = await api("/api/approvals");
+    const mine = pending.filter((p) => p.task === task);
+    if (mine.length && !box.querySelector(`[data-ap="${mine[0].id}"]`)) {
+      const p = mine[0];
+      const yes = el("button", { class: "primary" }, "Approve this send");
+      const no = el("button", {}, "Deny it");
+      const card = el("div", { class: "card approval", "data-ap": p.id, role: "alertdialog", "aria-label": "Approval needed" },
+        el("strong", {}, `Approval needed: ${p.agent} wants to call ${p.tool}`),
+        el("div", { class: "ev BLOCKED" }, `why held: ${p.why}`),
+        el("div", { class: "row" }, yes, no));
+      const decideIt = async (approve) => { yes.disabled = no.disabled = true; await api("/api/approvals/decide", { id: p.id, approve }); };
+      yes.addEventListener("click", () => decideIt(true));
+      no.addEventListener("click", () => decideIt(false));
+      box.replaceChildren(el("p", { class: "muted" }, `task ${task}: the call is held in the gateway until you decide.`), card);
+      yes.focus();
+    }
+    await new Promise((r) => setTimeout(r, 500));
+  }
+}
+function showAskResult(box, st, task) {
+  if (st.status === "error") { box.replaceChildren(el("p", { class: "BLOCKED" }, st.error)); return; }
+  box.replaceChildren(el("h3", {}, `Ask mode result (task ${task})`));
+  st.events.forEach((e) => box.append(el("div", { class: `ev ${e.blocked ? "BLOCKED" : ""}` },
+    `${e.agent.padEnd(16)} ${e.tool.padEnd(28)} ${e.blocked ? "DENIED" : "ok"}`)));
+  box.append(el("div", { class: `verdict ${st.exfiltrated.length ? "leak" : "safe"}` },
+    st.exfiltrated.length ? `You approved it: attacker inbox RECEIVED data` : "Attacker inbox: empty"));
+  loadLedger();
 }
 
 // ---------------------------------------------------------------- my setup
@@ -311,6 +350,7 @@ document.querySelectorAll("[role=tab]").forEach((b) => b.addEventListener("click
   if (b.id === "b-choke") loadChoke().catch((e) => ($("#choke").textContent = e.message));
   if (b.id === "b-gw") loadLedger().catch(() => {});
 }));
+document.querySelectorAll("[data-ask]").forEach((b) => b.addEventListener("click", () => runAsk(b.dataset.ask).catch((e) => ($("#ask").textContent = e.message))));
 document.querySelectorAll("[data-gw]").forEach((b) => b.addEventListener("click", () => runGateway(b.dataset.gw).catch((e) => ($("#gw").textContent = e.message))));
 $("#r-go").addEventListener("click", () => traceReach().catch((e) => ($("#route").textContent = e.message)));
 $("#setup-sample").addEventListener("click", () => scanSetup("sample").catch((e) => ($("#setup").textContent = e.message)));

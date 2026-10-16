@@ -14,6 +14,7 @@ import json
 import os
 import pathlib
 import tempfile
+import threading
 import uuid
 from contextlib import AsyncExitStack
 
@@ -58,9 +59,10 @@ def _sent(p: pathlib.Path) -> list[dict]:
     return [json.loads(x) for x in p.read_text().splitlines()] if p.exists() else []
 
 
-async def _scripted(g, scenario: str, mode: str, task: str) -> list[dict]:
+async def _scripted(g, scenario: str, mode: str, task: str, ask_timeout: float = 120.0) -> list[dict]:
     agents = sorted({a for a, _, _ in SCRIPTS[scenario]})
-    gws = {a: G.Gateway(g, a, {s: build(s) for s in AGENT_SERVERS[a]}, task=task, mode=mode) for a in agents}
+    gws = {a: G.Gateway(g, a, {s: build(s) for s in AGENT_SERVERS[a]}, task=task, mode=mode,
+                       ask_timeout=ask_timeout) for a in agents}
     events, last = [], ""
     async with AsyncExitStack() as stack:
         for gw in gws.values():
@@ -117,3 +119,42 @@ def run(g, scenario: str, llm: bool = False) -> dict:
 
 def ledger(g, limit: int = 200) -> dict:
     return {"calls": Q.ro(g, LEDGER, {"limit": max(1, min(int(limit), 500))})}
+
+
+# ---- ask mode: a run that waits on a human, so it runs off the request thread ----------
+_JOBS: dict[str, dict] = {}
+_JOBS_LOCK = threading.Lock()
+
+
+def start_ask(g, scenario: str, timeout: float = 90.0) -> dict:
+    if scenario not in SCRIPTS:
+        raise ValueError("scenario must be support | cross-agent")
+    job = f"ask-{uuid.uuid4().hex[:6]}"
+    task = f"{scenario}-ask-{job[4:]}"
+    with _JOBS_LOCK:
+        _JOBS[job] = {"status": "running", "task": task, "scenario": scenario}
+    out = _outbox_path().with_name(f"reach_ui_outbox_{job}.jsonl")
+
+    def work():
+        # the outbox path is per job; mock servers inherit it from this env at spawn
+        os.environ["REACH_OUTBOX"] = str(out)
+        try:
+            events = asyncio.run(_scripted(g, scenario, "ask", task, ask_timeout=timeout))
+            sent = _sent(out)
+            res = {"status": "done", "events": events, "exfiltrated": [s["to"] for s in sent if s["to"] == ATTACKER]}
+        except Exception as e:  # report to the UI, keep the server up
+            res = {"status": "error", "error": f"{type(e).__name__}: {str(e)[:200]}"}
+        finally:
+            out.unlink(missing_ok=True)
+        with _JOBS_LOCK:
+            _JOBS[job].update(res)
+
+    threading.Thread(target=work, daemon=True).start()
+    return {"job": job, "task": task}
+
+
+def ask_status(job: str) -> dict:
+    with _JOBS_LOCK:
+        if job not in _JOBS:
+            raise ValueError("unknown job")
+        return dict(_JOBS[job])
