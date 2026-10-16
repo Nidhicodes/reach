@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "zendesk":  {"command": "uv", "args": ["run", "--no-sync", "python", "-m", "reach.mock_servers", "zendesk"]},
+    "postgres": {"command": "uv", "args": ["run", "--no-sync", "python", "-m", "reach.mock_servers", "postgres"]},
+    "gmail":    {"command": "uv", "args": ["run", "--no-sync", "python", "-m", "reach.mock_servers", "gmail"]}
+  }
+}
