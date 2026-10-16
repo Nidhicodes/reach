@@ -16,7 +16,7 @@ from reach import queries as Q
 
 UNIQUE = [("Task", ("id",)), ("Call", ("task", "seq")), ("Agent", ("name",)), ("Tool", ("name",)),
           ("Server", ("name",)), ("Scope", ("name",)), ("Source", ("name",)), ("Data", ("name",)),
-          ("Sink", ("name",)), ("Approval", ("id",))]
+          ("Sink", ("name",)), ("Approval", ("id",)), ("Entity", ("value",))]
 
 _done: set[str] = set()
 

@@ -142,8 +142,13 @@ class Gateway:
     """mode: 'block' (default), 'audit' (log only) or 'ask' (hold the call for a human)."""
 
     def __init__(self, g, agent: str, upstreams: dict, task: str | None = None, mode: str = "block",
-                 ask_timeout: float = 120.0, poll: float = 0.5):
+                 ask_timeout: float = 120.0, poll: float = 0.5, provenance: bool | None = None,
+                 trusted: str | None = None):
         self.g, self.agent, self.upstreams, self.mode = g, agent, upstreams, mode
+        # destination provenance (reach.provenance): a would-block send to an address the
+        # task's trusted sources vouched for is allowed. `trusted` = org allowlist text.
+        self.provenance = provenance if provenance is not None else os.environ.get("REACH_PROVENANCE") == "1"
+        self.trusted = trusted if trusted is not None else os.environ.get("REACH_TRUSTED", "")
         self.ask_timeout, self.poll = ask_timeout, poll
         self.task = task or os.environ.get("REACH_TASK") or f"task-{uuid.uuid4().hex[:8]}"
         self.clients: dict[str, Client] = {}
@@ -182,7 +187,16 @@ class Gateway:
         prior = Q.ro(self.g, TASK_LEGS, {"task": self.task, "seq": seq})
         nxt = Q.ro(self.g, TOOL_LEGS, {"tool": tool})
         v = verdict(prior, nxt, tool)
-        v.update(tool=tool, seq=seq)
+        if v["verdict"] == "blocked" and self.provenance:
+            from reach import provenance as P
+
+            if self.trusted:
+                P.vouch(self.g, self.task, self.trusted)
+            c = P.check(self.g, self.task, args or {})
+            v["provenance"] = c
+            if c["destinations"] and not c["unvouched"]:
+                v = {"verdict": "allowed", "vouched": c}
+        v.update(tool=tool, seq=seq, legs=nxt)
         return v
 
     def _finalise(self, seq: int, v: str, reason: str = "") -> None:
@@ -240,7 +254,12 @@ class Gateway:
             self._finalise(v["seq"], "error", str(e)[:200])
             raise
         if v["verdict"] == "allowed":
-            self._finalise(v["seq"], "allowed")
+            self._finalise(v["seq"], "allowed", "destination vouched" if v.get("vouched") else "")
+        if self.provenance and not res.is_error:
+            from reach import provenance as P
+
+            text = " ".join(getattr(c, "text", "") for c in res.content or [])
+            P.saw(self.g, self.task, v["seq"], text, trusted=not any(l["leg"] == "INGESTS" for l in v["legs"]))
         return res
 
 
@@ -271,6 +290,8 @@ def main() -> None:
     ap.add_argument("--ask", action="store_true", help="hold would-block calls for a human decision")
     ap.add_argument("--ask-timeout", type=float, default=120.0)
     ap.add_argument("--policy", choices=sorted(POLICIES), help="trifecta (default) or rule-of-two")
+    ap.add_argument("--provenance", action="store_true", help="allow risky sends to vouched destinations")
+    ap.add_argument("--trusted", default="", help="addresses/domains the org vouches for, comma-separated")
     ap.add_argument("--only", help="comma-separated servers from --config to proxy (default: all)")
     a = ap.parse_args()
     from reach.db import connect
@@ -282,7 +303,8 @@ def main() -> None:
     if a.only:
         keep = set(a.only.split(","))
         ups = {k: v for k, v in ups.items() if k in keep}
-    gw = Gateway(connect(), a.agent, ups, a.task, mode, ask_timeout=a.ask_timeout)
+    gw = Gateway(connect(), a.agent, ups, a.task, mode, ask_timeout=a.ask_timeout,
+                 provenance=a.provenance or None, trusted=a.trusted.replace(",", " ") or None)
     server = build_server(gw)
 
     import anyio

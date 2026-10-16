@@ -56,8 +56,11 @@ Answer ONLY a JSON array, one object per tool in the same order:
 def chat(prompt: str, model: str | None = None) -> str:
     base = os.environ["REACH_LLM_BASE_URL"].rstrip("/")
     model = model or os.environ.get("REACH_LABEL_MODEL", "openai/gpt-oss-120b")
-    body = json.dumps({"model": model, "temperature": 0,
-                       "messages": [{"role": "system", "content": RUBRIC}, {"role": "user", "content": prompt}]}).encode()
+    req_body = {"model": model, "temperature": 0, "max_completion_tokens": 6000,
+                "messages": [{"role": "system", "content": RUBRIC}, {"role": "user", "content": prompt}]}
+    if os.environ.get("REACH_LABEL_EFFORT"):  # gpt-oss: keep reasoning short so the answer is not cut off
+        req_body["reasoning_effort"] = os.environ["REACH_LABEL_EFFORT"]
+    body = json.dumps(req_body).encode()
     hdr = {"Content-Type": "application/json", "User-Agent": "reach/0.1"}
     if os.environ.get("REACH_LLM_API_KEY"):
         hdr["Authorization"] = f"Bearer {os.environ['REACH_LLM_API_KEY']}"
