@@ -87,3 +87,15 @@ def test_ask_mode_round_trip_through_the_api():
         time.sleep(0.05)
     assert st["status"] == "done" and st["exfiltrated"] == []
     assert st["events"][-1]["blocked"]
+
+
+def test_harden_endpoint_is_a_dry_run_on_the_sample():
+    import json
+
+    before = {p.name: p.read_text() for p in web.SAMPLE_DIR.glob("*.json")}
+    r = call("/api/harden", body={})
+    assert not r["applied"] and len(r["configs"]) == 4
+    assert all(c["capabilities_removed"] == 0 for c in r["configs"])
+    assert {p.name: p.read_text() for p in web.SAMPLE_DIR.glob("*.json")} == before
+    assert not list(web.SAMPLE_DIR.glob("*.pre-reach.json"))
+    json.dumps(r)

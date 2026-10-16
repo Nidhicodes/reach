@@ -353,6 +353,21 @@ document.querySelectorAll("[role=tab]").forEach((b) => b.addEventListener("click
 document.querySelectorAll("[data-ask]").forEach((b) => b.addEventListener("click", () => runAsk(b.dataset.ask).catch((e) => ($("#ask").textContent = e.message))));
 document.querySelectorAll("[data-gw]").forEach((b) => b.addEventListener("click", () => runGateway(b.dataset.gw).catch((e) => ($("#gw").textContent = e.message))));
 $("#r-go").addEventListener("click", () => traceReach().catch((e) => ($("#route").textContent = e.message)));
+async function proposeHardening() {
+  const box = $("#harden-out");
+  box.replaceChildren(el("p", { class: "muted" }, "Planning edits for each config..."));
+  const r = await api("/api/harden", {});
+  box.replaceChildren(el("p", { class: "muted" }, `Dry run: nothing is written. ${r.note}.`));
+  r.configs.forEach((c) => {
+    const card = el("div", { class: "card" }, el("strong", {}, `${c.agent} (${c.file}): ${c.paths} path(s)`));
+    if (!c.edits.length) card.append(el("div", { class: "muted" }, "Already guarded: every send needs a human."));
+    c.edits.forEach((e) => card.append(el("div", {}, `${e.kind}: ${(e.tools || e.servers).join(", ")}`), el("div", { class: "muted" }, e.why)));
+    card.append(el("div", { class: "verdict safe" }, `after: ${c.paths_guarded_after}/${c.paths} guarded; ${c.capabilities_removed} tools removed`));
+    if (c.diff) { const d = el("details", {}, el("summary", {}, "diff")); d.append(el("pre", {}, c.diff)); card.append(d); }
+    box.append(card);
+  });
+}
+$("#harden").addEventListener("click", () => proposeHardening().catch((e) => ($("#harden-out").textContent = e.message)));
 $("#setup-sample").addEventListener("click", () => scanSetup("sample").catch((e) => ($("#setup").textContent = e.message)));
 $("#setup-mine").addEventListener("click", () => scanSetup("mine").catch((e) => ($("#setup").textContent = e.message)));
 api("/api/config").then((c) => {

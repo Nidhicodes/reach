@@ -258,11 +258,16 @@ def main() -> None:
     ap.add_argument("--audit", action="store_true", help="log would-block calls but let them through")
     ap.add_argument("--ask", action="store_true", help="hold would-block calls for a human decision")
     ap.add_argument("--ask-timeout", type=float, default=120.0)
+    ap.add_argument("--only", help="comma-separated servers from --config to proxy (default: all)")
     a = ap.parse_args()
     from reach.db import connect
 
     mode = "audit" if a.audit else "ask" if a.ask else "block"
-    gw = Gateway(connect(), a.agent, load_config(a.config), a.task, mode, ask_timeout=a.ask_timeout)
+    ups = load_config(a.config)
+    if a.only:
+        keep = set(a.only.split(","))
+        ups = {k: v for k, v in ups.items() if k in keep}
+    gw = Gateway(connect(), a.agent, ups, a.task, mode, ask_timeout=a.ask_timeout)
     server = build_server(gw)
 
     import anyio

@@ -137,6 +137,24 @@ def finding_history(key: str) -> dict:
 
 
 @mcp.tool(annotations=RO)
+def propose_hardening(config_path: str) -> dict:
+    """Dry run: edits to one MCP client config that guard every trifecta path without
+    removing a tool (take auto-approval off send legs; route on-path servers through
+    Reach Gateway). Returns the plan and a unified diff. Never writes the file:
+    applying it is a human step (`reach-harden <file> --apply`)."""
+    from reach import harden
+    from reach.db import connect
+
+    try:
+        rep = harden.plan(connect("harden"), config_path)
+    except (OSError, ValueError) as e:
+        return {"outcome": "not_a_config", "error": str(e)[:200]}
+    return {"outcome": "answered_with_path" if rep["paths"] else "not_in_graph",
+            **{k: v for k, v in rep.items() if not k.startswith("_")},
+            "requires": "human runs reach-harden --apply"}
+
+
+@mcp.tool(annotations=RO)
 def open_at(at_ms: int) -> dict:
     """Which paths were open as of the latest scan at or before at_ms (epoch ms)."""
     from reach.history import open_at as oa

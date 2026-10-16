@@ -37,6 +37,8 @@ section{padding:14px 16px;overflow:auto;flex:1}section[hidden]{display:none}
 pre{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;overflow:auto;font-size:12px;white-space:pre-wrap}
 .ev{font-family:ui-monospace,Menlo,monospace;font-size:12px;padding:3px 0;border-bottom:1px dashed var(--line)}
 .BLOCKED{color:var(--bad);font-weight:600}.delegated{color:var(--agent)}
+.card{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:0 0 8px;background:var(--panel)}
+pre{white-space:pre-wrap;font-size:11px;overflow-x:auto}
 .approval{border:1px solid #d29922;border-radius:8px;padding:10px 12px;margin:8px 0;background:#2d230f}
 .approval strong{display:block;margin-bottom:6px;color:#e6edf3}
 .verdict{padding:8px 10px;border-radius:8px;margin:8px 0 14px;font-weight:600}
@@ -110,7 +112,8 @@ table{border-collapse:collapse;width:100%;font-size:12px}td,th{border-bottom:1px
     </section>
     <section id="t-setup" role="tabpanel" aria-labelledby="b-setup" hidden>
       <p class="muted">Reads MCP client configs (Claude Desktop, Claude Code, Cursor, Kiro agents, Windsurf, VS Code, Gemini CLI, Codex) and maps each client as an agent. Static mode: nothing is started. Only server names and env <em>key</em> names are kept, never values.</p>
-      <div class="row"><button class="primary" id="setup-sample">Scan the sample laptop</button><button id="setup-mine">Scan this machine</button></div>
+      <div class="row"><button class="primary" id="setup-sample">Scan the sample laptop</button><button id="setup-mine">Scan this machine</button><button id="harden">Propose hardening for the sample laptop</button></div>
+      <div id="harden-out"></div>
       <p class="muted" id="setup-note">"This machine" stays on this computer; do not screen-share it if your configs are private.</p>
       <div id="setup"></div>
     </section>

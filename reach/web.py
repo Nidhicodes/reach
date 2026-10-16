@@ -137,6 +137,17 @@ def api(method: str, path: str, q: dict, body: dict) -> dict:
         if which not in ("sample", "mine"):
             raise ValueError("which must be sample | mine")
         return scan_setup(graph(which), which)
+    if method == "POST" and path == "/api/harden":
+        from reach import harden
+
+        files = sorted(SAMPLE_DIR.glob("*.json"))  # dry run on the bundled sample only
+        out = []
+        for f in files:
+            r = harden.plan(connect("ui-harden", path=os.environ.get("REACH_DB_PATH", "reach_ui.db")), str(f))
+            r["file"] = f.name
+            r["diff"] = r["diff"].replace(str(SAMPLE_DIR) + "/", "")
+            out.append({k: v for k, v in r.items() if not k.startswith("_")})
+        return {"configs": out, "applied": False, "note": "dry run; apply with reach-harden <file> --apply"}
     if method == "POST" and path == "/api/gateway/run":
         from reach import gateway_demo
 
