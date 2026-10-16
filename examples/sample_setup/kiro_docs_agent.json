@@ -1,0 +1,6 @@
+{
+  "name": "kiro-agent:docs",
+  "tools": ["fs_read", "web_fetch"],
+  "allowedTools": ["fs_read"],
+  "mcpServers": {}
+}

@@ -1,0 +1,6 @@
+{
+  "name": "kiro-agent:research",
+  "tools": ["web_fetch", "web_search", "fs_read", "execute_bash"],
+  "allowedTools": ["web_fetch", "web_search", "fs_read", "execute_bash"],
+  "mcpServers": {"brave-search": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-brave-search"], "env": {"BRAVE_API_KEY": "<redacted>"}}}
+}

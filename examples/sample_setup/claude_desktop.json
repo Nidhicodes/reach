@@ -1,0 +1,8 @@
+{
+  "name": "claude-desktop",
+  "mcpServers": {
+    "filesystem": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/alex/Documents"]},
+    "github": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-github"], "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": "<redacted>"}},
+    "slack": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-slack"], "env": {"SLACK_BOT_TOKEN": "<redacted>", "SLACK_TEAM_ID": "<redacted>"}}
+  }
+}
