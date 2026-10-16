@@ -1,0 +1,57 @@
+{
+ "server": "dropbox",
+ "display_name": "Dropbox",
+ "description": "Store, sync, and share files across devices. Manage folders, control access permissions, and collaborate on documents.",
+ "source_url": "https://smithery.ai/servers/dropbox",
+ "fetched_at": "2026-10-15T12:49:53Z",
+ "tools": [
+  {
+   "name": "DROPBOX_CREATE_FILE_REQUEST",
+   "description": "Tool to create a new file request in Dropbox. Use when you need to request files from others by generating a unique link for uploads to a specified Dropbox folder, optionally with a deadline."
+  },
+  {
+   "name": "DROPBOX_CREATE_FOLDER",
+   "description": "Tool to create a new folder at a specified path in Dropbox. Use when you need to organize files by creating a new directory. Requires the 'files.content.write' scope."
+  },
+  {
+   "name": "DROPBOX_CREATE_PAPER",
+   "description": "Creates a new Dropbox Paper document at the specified path using HTML or Markdown content."
+  },
+  {
+   "name": "DROPBOX_DELETE_FILE_OR_FOLDER",
+   "description": "Permanently deletes the file or folder at the specified path in Dropbox. Use when you need to remove a specific file or folder. Requires the `files.content.write` scope."
+  },
+  {
+   "name": "DROPBOX_GET_ABOUT_ME",
+   "description": "Tool to get information about the current user's Dropbox account. Use when you need to retrieve account details like email, name, or account type."
+  },
+  {
+   "name": "DROPBOX_GET_TEMPORARY_LINK",
+   "description": "Tool to get a one-click temporary (expiring) download link. Use when you need to share a Dropbox file directly without proxying content through this service. Requires `files.content.read` scope."
+  },
+  {
+   "name": "DROPBOX_LIST_FILES_IN_FOLDER",
+   "description": "Tool to list files and folders in a specified Dropbox directory. Use when you need to see the contents of a folder, including subfolders if recursive is true."
+  },
+  {
+   "name": "DROPBOX_LIST_FOLDERS",
+   "description": "Retrieves a list of folders, files, and deleted entries from a specified Dropbox path."
+  },
+  {
+   "name": "DROPBOX_MOVE_FILE_OR_FOLDER",
+   "description": "Move file or folder"
+  },
+  {
+   "name": "DROPBOX_READ_FILE",
+   "description": "Downloads a file from the specified Dropbox path, requiring `files.content.read` scope."
+  },
+  {
+   "name": "DROPBOX_SEARCH_FILE_OR_FOLDER",
+   "description": "Tool to search for files and folders in Dropbox. Use when you need to find an item by name or content, optionally within a specific path or with other filters, and paginate through results. Example: Search for 'report.docx' in the '/finance' folder."
+  },
+  {
+   "name": "DROPBOX_UPLOAD_FILE",
+   "description": "Uploads a file to a specified path in the user's Dropbox, with options for handling existing files."
+  }
+ ]
+}

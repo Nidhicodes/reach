@@ -1,0 +1,521 @@
+{
+ "server": "discord",
+ "display_name": "Discord",
+ "description": "Discord is a communication platform for communities, teams, and friends. Manage guilds, channels, roles, and members. Send messages, reactions, and embeds. Create and configure slash commands, webhooks, emojis, soundboard sounds, and scheduled events.",
+ "source_url": "https://smithery.ai/servers/discord",
+ "fetched_at": "2026-10-15T12:49:52Z",
+ "tools": [
+  {
+   "name": "applications.me.list",
+   "description": "Get current application details"
+  },
+  {
+   "name": "applications.get",
+   "description": "Get application by ID"
+  },
+  {
+   "name": "applications.commands.list",
+   "description": "List global application commands"
+  },
+  {
+   "name": "applications.commands.create",
+   "description": "Create global application command"
+  },
+  {
+   "name": "applications.commands.get",
+   "description": "Get global application command by ID"
+  },
+  {
+   "name": "applications.commands.update",
+   "description": "Update global application command"
+  },
+  {
+   "name": "applications.commands.delete",
+   "description": "Delete global application command"
+  },
+  {
+   "name": "applications.emojis.list",
+   "description": "List application emojis"
+  },
+  {
+   "name": "applications.emojis.create",
+   "description": "Create application emoji"
+  },
+  {
+   "name": "applications.emojis.get",
+   "description": "Get application emoji by ID"
+  },
+  {
+   "name": "applications.emojis.update",
+   "description": "Update application emoji"
+  },
+  {
+   "name": "applications.emojis.delete",
+   "description": "Delete application emoji"
+  },
+  {
+   "name": "applications.entitlements.list",
+   "description": "List entitlements for application with optional filters"
+  },
+  {
+   "name": "applications.entitlements.create",
+   "description": "Create test entitlement for application"
+  },
+  {
+   "name": "applications.entitlements.get",
+   "description": "Get entitlement by ID"
+  },
+  {
+   "name": "applications.entitlements.delete",
+   "description": "Delete test entitlement"
+  },
+  {
+   "name": "applications.entitlements.consume.create",
+   "description": "Consume one-time entitlement"
+  },
+  {
+   "name": "applications.guilds.commands.list",
+   "description": "List guild application commands"
+  },
+  {
+   "name": "applications.guilds.commands.create",
+   "description": "Create guild application command"
+  },
+  {
+   "name": "applications.guilds.commands.permissions.by_guild_id.list",
+   "description": "List permissions for all guild application commands"
+  },
+  {
+   "name": "applications.guilds.commands.get",
+   "description": "Get guild application command by ID"
+  },
+  {
+   "name": "applications.guilds.commands.update",
+   "description": "Update guild application command"
+  },
+  {
+   "name": "applications.guilds.commands.delete",
+   "description": "Delete guild application command"
+  },
+  {
+   "name": "applications.guilds.commands.permissions.list",
+   "description": "Get permissions for guild application command"
+  },
+  {
+   "name": "applications.guilds.commands.permissions.update",
+   "description": "Set permissions for guild application command"
+  },
+  {
+   "name": "applications.role_connections.metadata.list",
+   "description": "Get application role connection metadata records"
+  },
+  {
+   "name": "channels.get",
+   "description": "Get channel by ID"
+  },
+  {
+   "name": "channels.update",
+   "description": "Update channel settings"
+  },
+  {
+   "name": "channels.delete",
+   "description": "Delete or close channel"
+  },
+  {
+   "name": "channels.followers.create",
+   "description": "Follow announcement channel to receive crossposted messages"
+  },
+  {
+   "name": "channels.invites.list",
+   "description": "List channel invites"
+  },
+  {
+   "name": "channels.invites.create",
+   "description": "Create channel invite"
+  },
+  {
+   "name": "channels.messages.list",
+   "description": "List messages in channel with optional filters"
+  },
+  {
+   "name": "channels.messages.create",
+   "description": "Send message to channel"
+  },
+  {
+   "name": "channels.messages.pins.list",
+   "description": "List pinned messages in channel"
+  },
+  {
+   "name": "channels.messages.get",
+   "description": "Get specific message by ID"
+  },
+  {
+   "name": "channels.messages.update",
+   "description": "Update message content or components"
+  },
+  {
+   "name": "channels.messages.delete",
+   "description": "Delete message by ID"
+  },
+  {
+   "name": "channels.messages.crosspost.create",
+   "description": "Crosspost message to following channels"
+  },
+  {
+   "name": "channels.messages.reactions.get",
+   "description": "List users who reacted with specific emoji"
+  },
+  {
+   "name": "channels.messages.reactions.by_emoji_name.delete",
+   "description": "Delete all reactions for specific emoji"
+  },
+  {
+   "name": "channels.messages.reactions.me.update",
+   "description": "Add reaction to message for current user"
+  },
+  {
+   "name": "channels.messages.reactions.me.delete",
+   "description": "Remove own reaction from message"
+  },
+  {
+   "name": "channels.messages.reactions.delete",
+   "description": "Remove specific user reaction from message"
+  },
+  {
+   "name": "channels.messages.threads.create",
+   "description": "Create thread from existing message"
+  },
+  {
+   "name": "channels.polls.answers.get",
+   "description": "Get voters for specific poll answer"
+  },
+  {
+   "name": "channels.polls.expire.create",
+   "description": "Immediately end poll and finalize results"
+  },
+  {
+   "name": "channels.thread_members.list",
+   "description": "List thread members"
+  },
+  {
+   "name": "channels.thread_members.me.update",
+   "description": "Join thread for current user"
+  },
+  {
+   "name": "channels.thread_members.me.delete",
+   "description": "Leave thread for current user"
+  },
+  {
+   "name": "channels.thread_members.get",
+   "description": "Get thread member by user ID"
+  },
+  {
+   "name": "channels.thread_members.update",
+   "description": "Add member to thread"
+  },
+  {
+   "name": "channels.thread_members.delete",
+   "description": "Remove member from thread"
+  },
+  {
+   "name": "channels.threads.create",
+   "description": "Create new thread in channel"
+  },
+  {
+   "name": "channels.threads.archived.public.list",
+   "description": "List public archived threads in channel"
+  },
+  {
+   "name": "channels.threads.search.list",
+   "description": "Search threads in channel"
+  },
+  {
+   "name": "channels.typing.create",
+   "description": "Trigger typing indicator in channel"
+  },
+  {
+   "name": "channels.users.me.threads.archived.private.list",
+   "description": "List joined private archived threads for current user"
+  },
+  {
+   "name": "channels.webhooks.list",
+   "description": "List webhooks configured for channel"
+  },
+  {
+   "name": "channels.webhooks.create",
+   "description": "Create webhook for channel"
+  },
+  {
+   "name": "gateway.list",
+   "description": "Get gateway WebSocket URL"
+  },
+  {
+   "name": "guilds.templates.get",
+   "description": "Get guild template by code"
+  },
+  {
+   "name": "guilds.get",
+   "description": "Get guild by ID"
+  },
+  {
+   "name": "guilds.audit_logs.list",
+   "description": "List guild audit log entries"
+  },
+  {
+   "name": "guilds.bans.list",
+   "description": "List guild bans"
+  },
+  {
+   "name": "guilds.bans.get",
+   "description": "Get guild ban for user"
+  },
+  {
+   "name": "guilds.channels.list",
+   "description": "List guild channels"
+  },
+  {
+   "name": "guilds.channels.create",
+   "description": "Create guild channel"
+  },
+  {
+   "name": "guilds.emojis.list",
+   "description": "List guild emojis"
+  },
+  {
+   "name": "guilds.emojis.create",
+   "description": "Create guild emoji"
+  },
+  {
+   "name": "guilds.emojis.get",
+   "description": "Get guild emoji"
+  },
+  {
+   "name": "guilds.emojis.update",
+   "description": "Update guild emoji"
+  },
+  {
+   "name": "guilds.emojis.delete",
+   "description": "Delete guild emoji"
+  },
+  {
+   "name": "guilds.invites.list",
+   "description": "List guild invites"
+  },
+  {
+   "name": "guilds.members.list",
+   "description": "List guild members"
+  },
+  {
+   "name": "guilds.members.me.update",
+   "description": "Update guild member for current user"
+  },
+  {
+   "name": "guilds.members.search.list",
+   "description": "Search guild members by query"
+  },
+  {
+   "name": "guilds.members.get",
+   "description": "Get guild member"
+  },
+  {
+   "name": "guilds.members.update",
+   "description": "Add member to guild"
+  },
+  {
+   "name": "guilds.members.by_user_id.update",
+   "description": "Update guild member"
+  },
+  {
+   "name": "guilds.members.roles.update",
+   "description": "Add role to guild member"
+  },
+  {
+   "name": "guilds.members.roles.delete",
+   "description": "Remove role from guild member"
+  },
+  {
+   "name": "guilds.onboarding.list",
+   "description": "Get guild onboarding configuration"
+  },
+  {
+   "name": "guilds.preview.get",
+   "description": "Get guild preview"
+  },
+  {
+   "name": "guilds.regions.list",
+   "description": "List guild voice regions"
+  },
+  {
+   "name": "guilds.roles.list",
+   "description": "List guild roles"
+  },
+  {
+   "name": "guilds.roles.create",
+   "description": "Create guild role"
+  },
+  {
+   "name": "guilds.roles.member_counts.list",
+   "description": "Get member counts per role"
+  },
+  {
+   "name": "guilds.roles.get",
+   "description": "Get guild role"
+  },
+  {
+   "name": "guilds.roles.update",
+   "description": "Update guild role"
+  },
+  {
+   "name": "guilds.roles.delete",
+   "description": "Delete guild role"
+  },
+  {
+   "name": "guilds.scheduled_events.list",
+   "description": "List guild scheduled events"
+  },
+  {
+   "name": "guilds.scheduled_events.create",
+   "description": "Create guild scheduled event"
+  },
+  {
+   "name": "guilds.scheduled_events.get",
+   "description": "Get guild scheduled event"
+  },
+  {
+   "name": "guilds.scheduled_events.update",
+   "description": "Update guild scheduled event"
+  },
+  {
+   "name": "guilds.scheduled_events.delete",
+   "description": "Delete guild scheduled event"
+  },
+  {
+   "name": "guilds.scheduled_events.users.list",
+   "description": "List guild scheduled event subscribers"
+  },
+  {
+   "name": "guilds.soundboard_sounds.list",
+   "description": "List guild soundboard sounds"
+  },
+  {
+   "name": "guilds.soundboard_sounds.create",
+   "description": "Create guild soundboard sound"
+  },
+  {
+   "name": "guilds.soundboard_sounds.get",
+   "description": "Get guild soundboard sound"
+  },
+  {
+   "name": "guilds.soundboard_sounds.update",
+   "description": "Update guild soundboard sound"
+  },
+  {
+   "name": "guilds.soundboard_sounds.delete",
+   "description": "Delete guild soundboard sound"
+  },
+  {
+   "name": "guilds.threads.active.list",
+   "description": "List active threads in guild"
+  },
+  {
+   "name": "guilds.welcome_screen.get",
+   "description": "Get guild welcome screen"
+  },
+  {
+   "name": "invites.get",
+   "description": "Resolve invite by code"
+  },
+  {
+   "name": "oauth2.me.list",
+   "description": "Get current OAuth2 authorization info"
+  },
+  {
+   "name": "oauth2.keys.list",
+   "description": "Get public OAuth2 keys"
+  },
+  {
+   "name": "soundboard_default_sounds.list",
+   "description": "List default soundboard sounds"
+  },
+  {
+   "name": "sticker_packs.list",
+   "description": "List available sticker packs"
+  },
+  {
+   "name": "users.me.list",
+   "description": "Get current user profile"
+  },
+  {
+   "name": "users.me.applications.entitlements.list",
+   "description": "List application entitlements for current user"
+  },
+  {
+   "name": "users.me.channels.create",
+   "description": "Create DM channel"
+  },
+  {
+   "name": "users.me.connections.list",
+   "description": "List connections for current user"
+  },
+  {
+   "name": "users.me.guilds.list",
+   "description": "List guilds for current user"
+  },
+  {
+   "name": "users.me.guilds.member.get",
+   "description": "Get guild member info for current user"
+  },
+  {
+   "name": "users.get",
+   "description": "Get user by ID"
+  },
+  {
+   "name": "voice.regions.list",
+   "description": "List available voice regions"
+  },
+  {
+   "name": "webhooks.by_webhook_id.get",
+   "description": "Get webhook by ID"
+  },
+  {
+   "name": "webhooks.by_webhook_id.update",
+   "description": "Update webhook by ID"
+  },
+  {
+   "name": "webhooks.get",
+   "description": "Get webhook using token"
+  },
+  {
+   "name": "webhooks.create",
+   "description": "Execute webhook"
+  },
+  {
+   "name": "webhooks.update",
+   "description": "Update webhook using token"
+  },
+  {
+   "name": "webhooks.delete",
+   "description": "Delete webhook using token"
+  },
+  {
+   "name": "webhooks.github.create",
+   "description": "Execute GitHub-compatible webhook"
+  },
+  {
+   "name": "webhooks.messages.get",
+   "description": "Get webhook message by ID"
+  },
+  {
+   "name": "webhooks.messages.update",
+   "description": "Update webhook message by ID"
+  },
+  {
+   "name": "webhooks.messages.delete",
+   "description": "Delete webhook message by ID"
+  },
+  {
+   "name": "webhooks.slack.create",
+   "description": "Execute Slack-compatible webhook"
+  }
+ ]
+}

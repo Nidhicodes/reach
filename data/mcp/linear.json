@@ -1,0 +1,109 @@
+{
+ "server": "linear",
+ "display_name": "Linear",
+ "description": "Manage issues, projects, cycles, and docs in Linear from one place. Create, update, and comment on issues; organize labels, statuses, and teams; and search docs and documentation. Stay on top of your work by listing assignments, projects, and upcoming cycles.",
+ "source_url": "https://smithery.ai/servers/linear",
+ "fetched_at": "2026-10-15T12:49:45Z",
+ "tools": [
+  {
+   "name": "list_comments",
+   "description": "List comments for a specific Linear issue"
+  },
+  {
+   "name": "create_comment",
+   "description": "Create a comment on a specific Linear issue"
+  },
+  {
+   "name": "list_cycles",
+   "description": "Retrieve cycles for a specific Linear team"
+  },
+  {
+   "name": "get_document",
+   "description": "Retrieve a Linear document by ID or slug"
+  },
+  {
+   "name": "list_documents",
+   "description": "List documents in the user's Linear workspace"
+  },
+  {
+   "name": "create_document",
+   "description": "Create a new document in Linear"
+  },
+  {
+   "name": "update_document",
+   "description": "Update an existing Linear document"
+  },
+  {
+   "name": "get_issue",
+   "description": "Retrieve detailed information about an issue by ID, including attachments and git branch name"
+  },
+  {
+   "name": "list_issues",
+   "description": "List issues in the user's Linear workspace. For my issues, use \"me\" as the assignee."
+  },
+  {
+   "name": "create_issue",
+   "description": "Create a new Linear issue"
+  },
+  {
+   "name": "update_issue",
+   "description": "Update an existing Linear issue"
+  },
+  {
+   "name": "list_issue_statuses",
+   "description": "List available issue statuses in a Linear team"
+  },
+  {
+   "name": "get_issue_status",
+   "description": "Retrieve detailed information about an issue status in Linear by name or ID"
+  },
+  {
+   "name": "list_issue_labels",
+   "description": "List available issue labels in a Linear workspace or team"
+  },
+  {
+   "name": "create_issue_label",
+   "description": "Create a new Linear issue label"
+  },
+  {
+   "name": "list_projects",
+   "description": "List projects in the user's Linear workspace"
+  },
+  {
+   "name": "get_project",
+   "description": "Retrieve details of a specific project in Linear"
+  },
+  {
+   "name": "create_project",
+   "description": "Create a new project in Linear"
+  },
+  {
+   "name": "update_project",
+   "description": "Update an existing Linear project"
+  },
+  {
+   "name": "list_project_labels",
+   "description": "List available project labels in the Linear workspace"
+  },
+  {
+   "name": "list_teams",
+   "description": "List teams in the user's Linear workspace"
+  },
+  {
+   "name": "get_team",
+   "description": "Retrieve details of a specific Linear team"
+  },
+  {
+   "name": "list_users",
+   "description": "Retrieve users in the Linear workspace"
+  },
+  {
+   "name": "get_user",
+   "description": "Retrieve details of a specific Linear user"
+  },
+  {
+   "name": "search_documentation",
+   "description": "Search Linear's documentation to learn about features and usage"
+  }
+ ]
+}

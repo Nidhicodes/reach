@@ -1,0 +1,73 @@
+{
+ "server": "zendesk",
+ "display_name": "Zendesk",
+ "description": "Manage support tickets, help center articles, and customer conversations. Track SLAs, assign agents, and search knowledge base content.",
+ "source_url": "https://smithery.ai/servers/zendesk",
+ "fetched_at": "2026-10-15T12:49:54Z",
+ "tools": [
+  {
+   "name": "ZENDESK_COUNT_ZENDESK_ORGANIZATIONS",
+   "description": "Count the number of organizations in Zendesk."
+  },
+  {
+   "name": "ZENDESK_CREATE_ZENDESK_ORGANIZATION",
+   "description": "Tool to create a Zendesk organization. Use when you need to group end users under a shared company profile. Use after confirming the organization name is unique."
+  },
+  {
+   "name": "ZENDESK_CREATE_ZENDESK_TICKET",
+   "description": "Create a ticket in Zendesk."
+  },
+  {
+   "name": "ZENDESK_CREATE_ZENDESK_USER",
+   "description": "Tool to create a new user in Zendesk. Use when you need to onboard a user with specific details."
+  },
+  {
+   "name": "ZENDESK_DELETE_ZENDESK_ORGANIZATION",
+   "description": "Delete an organization in Zendesk."
+  },
+  {
+   "name": "ZENDESK_DELETE_ZENDESK_TICKET",
+   "description": "Delete a ticket in Zendesk."
+  },
+  {
+   "name": "ZENDESK_DESTROY_MANY_ORGANIZATIONS",
+   "description": "Tool to bulk delete Zendesk organizations. Use when cleaning up test data or removing obsolete organizations in one call. Returns a job_status payload to track progress."
+  },
+  {
+   "name": "ZENDESK_GET_ABOUT_ME",
+   "description": "Get information about the owner account in Zendesk."
+  },
+  {
+   "name": "ZENDESK_GET_ALL_ZENDESK_ORGANIZATIONS",
+   "description": "Get all organizations in Zendesk."
+  },
+  {
+   "name": "ZENDESK_GET_ZENDESK_ORGANIZATION",
+   "description": "Get information about a specific organization in Zendesk."
+  },
+  {
+   "name": "ZENDESK_GET_ZENDESK_TICKET_BY_ID",
+   "description": "Get ticket details from Zendesk."
+  },
+  {
+   "name": "ZENDESK_LIST_ZENDESK_TICKETS",
+   "description": "List Zendesk tickets with pagination and filtering."
+  },
+  {
+   "name": "ZENDESK_REPLY_ZENDESK_TICKET",
+   "description": "Action to reply to a Zendesk ticket by adding a comment."
+  },
+  {
+   "name": "ZENDESK_SEARCH_ZENDESK_USERS",
+   "description": "Tool to search Zendesk users by email or name. Use after confirming user identity before ticket creation."
+  },
+  {
+   "name": "ZENDESK_UPDATE_ZENDESK_ORGANIZATION",
+   "description": "Update an organization in Zendesk."
+  },
+  {
+   "name": "ZENDESK_UPDATE_ZENDESK_TICKET",
+   "description": "Tool to update a ticket in Zendesk. Use when you need to modify ticket fields like status, priority, or subject after confirming the ticket ID."
+  }
+ ]
+}

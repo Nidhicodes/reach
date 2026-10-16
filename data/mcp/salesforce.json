@@ -1,0 +1,405 @@
+{
+ "server": "salesforce",
+ "display_name": "Salesforce",
+ "description": "Salesforce is a leading CRM platform integrating sales, service, marketing, and analytics to build customer relationships and drive business growth",
+ "source_url": "https://smithery.ai/servers/salesforce",
+ "fetched_at": "2026-10-15T12:49:48Z",
+ "tools": [
+  {
+   "name": "SALESFORCE_ACCOUNT_CREATION_WITH_CONTENT_TYPE_OPTION",
+   "description": "DEPRECATED: Creates a new Salesforce Account using a JSON POST request, requiring 'Name'; specific fields (e.g., custom, DunsNumber) may have org-level prerequisites."
+  },
+  {
+   "name": "SALESFORCE_ADD_CONTACT_TO_CAMPAIGN",
+   "description": "Adds a contact to a campaign by creating a CampaignMember record, allowing you to track campaign engagement."
+  },
+  {
+   "name": "SALESFORCE_ADD_LEAD_TO_CAMPAIGN",
+   "description": "Adds a lead to a campaign by creating a CampaignMember record, allowing you to track campaign engagement."
+  },
+  {
+   "name": "SALESFORCE_ADD_OPPORTUNITY_LINE_ITEM",
+   "description": "Adds a product (line item) to an opportunity. The product must exist in a pricebook entry that's associated with the opportunity's pricebook."
+  },
+  {
+   "name": "SALESFORCE_APPLY_LEAD_ASSIGNMENT_RULES",
+   "description": "Applies configured lead assignment rules to a specific lead, automatically routing it to the appropriate owner based on your organization's rules."
+  },
+  {
+   "name": "SALESFORCE_ASSOCIATE_CONTACT_TO_ACCOUNT",
+   "description": "Associates a contact with an account by updating the contact's AccountId field."
+  },
+  {
+   "name": "SALESFORCE_CLONE_OPPORTUNITY_WITH_PRODUCTS",
+   "description": "Clones an opportunity and optionally its products (line items). Creates a new opportunity with the same field values and products as the original."
+  },
+  {
+   "name": "SALESFORCE_CLONE_RECORD",
+   "description": "Creates a copy of an existing Salesforce record by reading its data, removing system fields, and creating a new record. Optionally apply field updates to the clone."
+  },
+  {
+   "name": "SALESFORCE_COMPLETE_TASK",
+   "description": "Marks a task as completed with optional completion notes. This is a convenience action that updates the task status to 'Completed'."
+  },
+  {
+   "name": "SALESFORCE_CREATE_ACCOUNT",
+   "description": "Creates a new account in Salesforce with the specified information."
+  },
+  {
+   "name": "SALESFORCE_CREATE_CAMPAIGN",
+   "description": "Creates a new campaign in Salesforce with the specified information."
+  },
+  {
+   "name": "SALESFORCE_CREATE_CAMPAIGN_RECORD_VIA_POST",
+   "description": "DEPRECATED: Creates a new campaign record in Salesforce; if 'ParentId' is provided, it must be a valid ID of an existing Campaign record, and if 'OwnerId' is provided, it must be a valid ID of an active User."
+  },
+  {
+   "name": "SALESFORCE_CREATE_CONTACT",
+   "description": "Creates a new contact in Salesforce with the specified information."
+  },
+  {
+   "name": "SALESFORCE_CREATE_LEAD",
+   "description": "Creates a new lead in Salesforce with the specified information."
+  },
+  {
+   "name": "SALESFORCE_CREATE_LEAD_WITH_SPECIFIED_CONTENT_TYPE",
+   "description": "DEPRECATED: Creates a new Lead in Salesforce, requiring `LastName` and `Company` unless person accounts are enabled and `Company` is null."
+  },
+  {
+   "name": "SALESFORCE_CREATE_NEW_CONTACT_WITH_JSON_HEADER",
+   "description": "DEPRECATED: Creates a new Contact in Salesforce; 'LastName' is required, an existing 'AccountId' must be used if provided, and any custom fields (ending with '__c') must be predefined."
+  },
+  {
+   "name": "SALESFORCE_CREATE_NOTE",
+   "description": "Creates a new note attached to a Salesforce record with the specified title and content."
+  },
+  {
+   "name": "SALESFORCE_CREATE_NOTE_RECORD_WITH_CONTENT_TYPE_HEADER",
+   "description": "DEPRECATED: Creates a new Note record in Salesforce, associated with an existing Salesforce object via `ParentId`, automatically including a `Content-Type: application/json` header."
+  },
+  {
+   "name": "SALESFORCE_CREATE_OPPORTUNITY",
+   "description": "Creates a new opportunity in Salesforce with the specified information."
+  },
+  {
+   "name": "SALESFORCE_CREATE_OPPORTUNITY_RECORD",
+   "description": "DEPRECATED: Creates a new Opportunity record in Salesforce; `Name`, `StageName`, and `CloseDate` are mandatory, and ensure any referenced IDs (e.g., `AccountId`, `CampaignId`) are valid and corresponding Salesforce features are enabled if used."
+  },
+  {
+   "name": "SALESFORCE_CREATE_TASK",
+   "description": "Creates a new task in Salesforce to track activities, to-dos, and follow-ups related to contacts, leads, or other records."
+  },
+  {
+   "name": "SALESFORCE_DELETE_ACCOUNT",
+   "description": "Permanently deletes an account from Salesforce. This action cannot be undone."
+  },
+  {
+   "name": "SALESFORCE_DELETE_A_LEAD_OBJECT_BY_ITS_ID",
+   "description": "DEPRECATED: Permanently deletes an existing Lead object from Salesforce using its unique ID."
+  },
+  {
+   "name": "SALESFORCE_DELETE_CAMPAIGN",
+   "description": "Permanently deletes a campaign from Salesforce. This action cannot be undone."
+  },
+  {
+   "name": "SALESFORCE_DELETE_CONTACT",
+   "description": "Permanently deletes a contact from Salesforce. This action cannot be undone."
+  },
+  {
+   "name": "SALESFORCE_DELETE_LEAD",
+   "description": "Permanently deletes a lead from Salesforce. This action cannot be undone."
+  },
+  {
+   "name": "SALESFORCE_DELETE_NOTE",
+   "description": "Permanently deletes a note from Salesforce. This action cannot be undone."
+  },
+  {
+   "name": "SALESFORCE_DELETE_OPPORTUNITY",
+   "description": "Permanently deletes an opportunity from Salesforce. This action cannot be undone."
+  },
+  {
+   "name": "SALESFORCE_EXECUTE_SOQL_QUERY",
+   "description": "DEPRECATED: Executes the provided SOQL query against Salesforce; the query must begin with 'SELECT'."
+  },
+  {
+   "name": "SALESFORCE_FETCH_ACCOUNT_BY_ID_WITH_QUERY",
+   "description": "DEPRECATED: Use this action to retrieve a Salesforce Account by its unique ID, which must be a valid and existing Salesforce Account ID; you can optionally specify a comma-delimited list of fields to return."
+  },
+  {
+   "name": "SALESFORCE_FETCH_MODIFIED_OR_UNMODIFIED_SOBJECTS",
+   "description": "DEPRECATED: Fetches SObjects from `/sobjects` based on caller-set 'If-Modified-Since' (returns objects modified after a date, or 304 status if none) or 'If-Unmodified-Since' (returns objects if unmodified since a date, or 412 status if modified) HTTP headers."
+  },
+  {
+   "name": "SALESFORCE_GET_ACCOUNT",
+   "description": "Retrieves a specific account by ID from Salesforce, returning all available fields."
+  },
+  {
+   "name": "SALESFORCE_GET_CAMPAIGN",
+   "description": "Retrieves a specific campaign by ID from Salesforce, returning all available fields."
+  },
+  {
+   "name": "SALESFORCE_GET_CONTACT",
+   "description": "Retrieves a specific contact by ID from Salesforce, returning all available fields."
+  },
+  {
+   "name": "SALESFORCE_GET_DASHBOARD",
+   "description": "Gets detailed metadata for a specific dashboard including its components, layout, and filters."
+  },
+  {
+   "name": "SALESFORCE_GET_LEAD",
+   "description": "Retrieves a specific lead by ID from Salesforce, returning all available fields."
+  },
+  {
+   "name": "SALESFORCE_GET_NOTE",
+   "description": "Retrieves a specific note by ID from Salesforce, returning all available fields."
+  },
+  {
+   "name": "SALESFORCE_GET_NOTE_BY_ID_WITH_FIELDS",
+   "description": "DEPRECATED: Retrieves a Salesforce Note object by its ID, optionally specifying which fields to return; the Note ID must exist."
+  },
+  {
+   "name": "SALESFORCE_GET_OPPORTUNITY",
+   "description": "Retrieves a specific opportunity by ID from Salesforce, returning all available fields."
+  },
+  {
+   "name": "SALESFORCE_GET_REPORT",
+   "description": "Gets detailed metadata for a specific report including its structure, columns, filters, and groupings."
+  },
+  {
+   "name": "SALESFORCE_GET_REPORT_INSTANCE",
+   "description": "Gets the results of a report instance created by running a report. Check status to see if report has completed."
+  },
+  {
+   "name": "SALESFORCE_GET_USER_INFO",
+   "description": "Retrieves information about the current user or a specific user in Salesforce."
+  },
+  {
+   "name": "SALESFORCE_LIST_ACCOUNTS",
+   "description": "Lists accounts from Salesforce using SOQL query, allowing flexible filtering, sorting, and field selection."
+  },
+  {
+   "name": "SALESFORCE_LIST_CAMPAIGNS",
+   "description": "Lists campaigns from Salesforce using SOQL query, allowing flexible filtering, sorting, and field selection."
+  },
+  {
+   "name": "SALESFORCE_LIST_CONTACTS",
+   "description": "Lists contacts from Salesforce using SOQL query, allowing flexible filtering, sorting, and field selection."
+  },
+  {
+   "name": "SALESFORCE_LIST_DASHBOARDS",
+   "description": "Lists all dashboards available in Salesforce with basic metadata including name, ID, and URLs."
+  },
+  {
+   "name": "SALESFORCE_LIST_EMAIL_TEMPLATES",
+   "description": "Lists available email templates in Salesforce with filtering and search capabilities."
+  },
+  {
+   "name": "SALESFORCE_LIST_LEADS",
+   "description": "Lists leads from Salesforce using SOQL query, allowing flexible filtering, sorting, and field selection."
+  },
+  {
+   "name": "SALESFORCE_LIST_NOTES",
+   "description": "Lists notes from Salesforce using SOQL query, allowing flexible filtering, sorting, and field selection."
+  },
+  {
+   "name": "SALESFORCE_LIST_OPPORTUNITIES",
+   "description": "Lists opportunities from Salesforce using SOQL query, allowing flexible filtering, sorting, and field selection."
+  },
+  {
+   "name": "SALESFORCE_LIST_PRICEBOOK_ENTRIES",
+   "description": "Lists pricebook entries from Salesforce using SOQL query, allowing flexible filtering, sorting, and field selection. Use this to map product names to pricebook entry IDs needed for opportunity line items."
+  },
+  {
+   "name": "SALESFORCE_LIST_PRICEBOOKS",
+   "description": "Lists pricebooks from Salesforce using SOQL query, allowing flexible filtering, sorting, and field selection. Use this to map pricebook names to IDs."
+  },
+  {
+   "name": "SALESFORCE_LIST_REPORTS",
+   "description": "Lists all reports available in Salesforce with basic metadata including name, ID, and URLs."
+  },
+  {
+   "name": "SALESFORCE_LOG_CALL",
+   "description": "Logs a completed phone call as a task in Salesforce with call-specific details like duration, type, and disposition."
+  },
+  {
+   "name": "SALESFORCE_LOG_EMAIL_ACTIVITY",
+   "description": "Creates an EmailMessage record to log email activity in Salesforce, associating it with related records."
+  },
+  {
+   "name": "SALESFORCE_MASS_TRANSFER_OWNERSHIP",
+   "description": "Transfers ownership of multiple records to a new owner in a single operation using Salesforce's composite API for better performance."
+  },
+  {
+   "name": "SALESFORCE_QUERY_CONTACTS_BY_NAME",
+   "description": "DEPRECATED: Finds Salesforce Contact records by name using a case-insensitive search."
+  },
+  {
+   "name": "SALESFORCE_QUERY_REPORT",
+   "description": "DEPRECATED: Executes a Salesforce report synchronously by its `id` and `reportType`, optionally with dynamic ad-hoc adjustments like filters or groupings, and returns its data without modifying the saved report."
+  },
+  {
+   "name": "SALESFORCE_REMOVE_ACCOUNT_BY_UNIQUE_IDENTIFIER",
+   "description": "DEPRECATED: Deletes an existing Salesforce Account using its unique ID, returning an empty response on success (HTTP 204)."
+  },
+  {
+   "name": "SALESFORCE_REMOVE_A_SPECIFIC_CONTACT_BY_ID",
+   "description": "DEPRECATED: Permanently deletes a specific Contact from Salesforce using its unique ID, which must correspond to an existing record."
+  },
+  {
+   "name": "SALESFORCE_REMOVE_CAMPAIGN_OBJECT_BY_ID",
+   "description": "DEPRECATED: Permanently deletes a specific Campaign SObject in Salesforce using its unique ID."
+  },
+  {
+   "name": "SALESFORCE_REMOVE_FROM_CAMPAIGN",
+   "description": "Removes a lead or contact from a campaign by deleting the CampaignMember record. Provide either the member_id (lead/contact ID) or the specific campaign_member_id."
+  },
+  {
+   "name": "SALESFORCE_REMOVE_NOTE_OBJECT_BY_ID",
+   "description": "DEPRECATED: Permanently deletes an existing Salesforce Note object identified by its unique ID."
+  },
+  {
+   "name": "SALESFORCE_REMOVE_OPPORTUNITY_BY_ID",
+   "description": "DEPRECATED: Permanently deletes an existing Salesforce Opportunity by its ID; if the Opportunity does not exist, a 'not found' (404) error occurs."
+  },
+  {
+   "name": "SALESFORCE_RETRIEVE_ACCOUNT_DATA_AND_ERROR_RESPONSES",
+   "description": "DEPRECATED: Retrieves comprehensive metadata for the Salesforce Account sObject, detailing its properties, recent records, and related resource URLs."
+  },
+  {
+   "name": "SALESFORCE_RETRIEVE_CAMPAIGN_DATA_WITH_ERROR_HANDLING",
+   "description": "DEPRECATED: Retrieves comprehensive information and metadata for the Salesforce Campaign sObject, provided it is enabled and accessible in the organization, and features robust error handling."
+  },
+  {
+   "name": "SALESFORCE_RETRIEVE_CONTACT_INFO_WITH_STANDARD_RESPONSES",
+   "description": "DEPRECATED: Retrieves comprehensive metadata (e.g., fields, data types, picklist values) for the Salesforce Contact SObject; this action does not retrieve individual contact records."
+  },
+  {
+   "name": "SALESFORCE_RETRIEVE_LEAD_BY_ID",
+   "description": "Retrieves details for a Salesforce Lead by its ID; the specified Lead ID must exist in Salesforce."
+  },
+  {
+   "name": "SALESFORCE_RETRIEVE_LEAD_DATA_WITH_VARIOUS_RESPONSES",
+   "description": "DEPRECATED: Retrieves Lead sObject data from Salesforce, such as recently viewed leads or general Lead object information."
+  },
+  {
+   "name": "SALESFORCE_RETRIEVE_NOTE_OBJECT_INFORMATION",
+   "description": "DEPRECATED: Retrieves comprehensive metadata for the Salesforce 'Note' SObject, if it is enabled and accessible, to understand its structure and capabilities."
+  },
+  {
+   "name": "SALESFORCE_RETRIEVE_OPPORTUNITIES_DATA",
+   "description": "Retrieves all available Opportunity records, representing potential revenue-generating deals, from Salesforce."
+  },
+  {
+   "name": "SALESFORCE_RETRIEVE_OPPORTUNITY_BY_ID_WITH_OPTIONAL_FIELDS",
+   "description": "DEPRECATED: Retrieves a Salesforce Opportunity by its ID; the Opportunity ID must exist."
+  },
+  {
+   "name": "SALESFORCE_RETRIEVE_SPECIFIC_CAMPAIGN_OBJECT_DETAILS",
+   "description": "DEPRECATED: Retrieves details for a specific Salesforce Campaign object by its ID, optionally limiting to specified fields; the Campaign object must exist."
+  },
+  {
+   "name": "SALESFORCE_RETRIEVE_SPECIFIC_CONTACT_BY_ID",
+   "description": "Retrieves a Salesforce Contact by its unique ID; the ID must correspond to an existing Contact record in Salesforce."
+  },
+  {
+   "name": "SALESFORCE_RUN_REPORT",
+   "description": "Runs a report and returns the results. Creates a report instance that can be checked for completion."
+  },
+  {
+   "name": "SALESFORCE_RUN_SOQL_QUERY",
+   "description": "Executes a SOQL query against Salesforce data. Returns records matching the query with pagination support."
+  },
+  {
+   "name": "SALESFORCE_SEARCH_ACCOUNTS",
+   "description": "Search for Salesforce accounts using multiple criteria like name, industry, type, location, or contact information."
+  },
+  {
+   "name": "SALESFORCE_SEARCH_CAMPAIGNS",
+   "description": "Search for Salesforce campaigns using multiple criteria like name, type, status, date range, or active status."
+  },
+  {
+   "name": "SALESFORCE_SEARCH_CONTACTS",
+   "description": "Search for Salesforce contacts using multiple criteria like name, email, phone, account, or title."
+  },
+  {
+   "name": "SALESFORCE_SEARCH_LEADS",
+   "description": "Search for Salesforce leads using multiple criteria like name, email, phone, company, title, status, or lead source."
+  },
+  {
+   "name": "SALESFORCE_SEARCH_NOTES",
+   "description": "Search for Salesforce notes using multiple criteria like title, body content, parent record, owner, or creation date."
+  },
+  {
+   "name": "SALESFORCE_SEARCH_OPPORTUNITIES",
+   "description": "Search for Salesforce opportunities using multiple criteria like name, account, stage, amount, close date, or status."
+  },
+  {
+   "name": "SALESFORCE_SEARCH_TASKS",
+   "description": "Search for Salesforce tasks using multiple criteria like subject, status, priority, assigned user, related records, or dates."
+  },
+  {
+   "name": "SALESFORCE_SEND_EMAIL",
+   "description": "Sends an email through Salesforce with options for recipients, attachments, and activity logging."
+  },
+  {
+   "name": "SALESFORCE_SEND_EMAIL_FROM_TEMPLATE",
+   "description": "Sends an email using a predefined Salesforce email template with merge field support."
+  },
+  {
+   "name": "SALESFORCE_SEND_MASS_EMAIL",
+   "description": "Sends bulk emails to multiple recipients, either using a template or custom content. Processes in batches for better performance."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_ACCOUNT",
+   "description": "Updates an existing account in Salesforce with the specified changes. Only provided fields will be updated."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_ACCOUNT_OBJECT_BY_ID",
+   "description": "DEPRECATED: Updates specified fields of an existing Salesforce Account object identified by its unique ID; field names are case-sensitive and read-only fields are ignored."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_CAMPAIGN",
+   "description": "Updates an existing campaign in Salesforce with the specified changes. Only provided fields will be updated."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_CAMPAIGN_BY_ID_WITH_JSON",
+   "description": "DEPRECATED: Updates specific fields of an existing Campaign in Salesforce, identified by its unique `id`, which must already exist."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_CONTACT",
+   "description": "Updates an existing contact in Salesforce with the specified changes. Only provided fields will be updated."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_CONTACT_BY_ID",
+   "description": "DEPRECATED: Updates specified fields of an existing Salesforce Contact by its ID; at least one field must be provided for modification."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_LEAD",
+   "description": "Updates an existing lead in Salesforce with the specified changes. Only provided fields will be updated."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_LEAD_BY_ID_WITH_JSON_PAYLOAD",
+   "description": "DEPRECATED: Updates specified fields of an existing Lead in Salesforce via its unique ID (path parameter), returning HTTP 204 on success or error details on failure; request body must contain at least one field to update."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_NOTE",
+   "description": "Updates an existing note in Salesforce with the specified changes. Only provided fields will be updated."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_OPPORTUNITY",
+   "description": "Updates an existing opportunity in Salesforce with the specified changes. Only provided fields will be updated."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_OPPORTUNITY_BY_ID",
+   "description": "DEPRECATED: Updates specified fields of an existing Salesforce Opportunity by its ID; the Opportunity must exist, and some fields (like Name, StageName, CloseDate) may have specific Salesforce validation rules if being modified, while read-only fields update indirectly based on other changes."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_SPECIFIC_NOTE_BY_ID",
+   "description": "DEPRECATED: Use `update_specific_note_by_id` instead. Updates specified fields of an existing Salesforce Note SObject identified by its ID; the Note must already exist."
+  },
+  {
+   "name": "SALESFORCE_UPDATE_TASK",
+   "description": "Updates an existing task in Salesforce with new information. Only provided fields will be updated."
+  }
+ ]
+}

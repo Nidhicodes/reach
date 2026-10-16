@@ -1,0 +1,37 @@
+{
+ "server": "hubspot",
+ "display_name": "HubSpot",
+ "description": "Access your HubSpot CRM through AI assistants. Search contacts, view deal pipelines, check ticket status, pull company details, and explore your sales data through natural language.",
+ "source_url": "https://smithery.ai/servers/hubspot",
+ "fetched_at": "2026-10-15T12:49:47Z",
+ "tools": [
+  {
+   "name": "search_crm_objects",
+   "description": "Searches and retrieves CRM records from HubSpot based on filters and criteria.\n\n<capabilities>\n- Returns a 'total' count attribute that can help perform analytical tasks on large datasets\n- Useful to sample data from a specific object type to understand the data model\n- Can list and filter by associations between objects (e.g., \"contacts associated with company X or contacts with num_associated_deals > 1\")\n- Use the search_owners tool to list users/owners in the HubSpot account\n</capabilities>\n\n<returns>\nList of matching CRM records containing:\n- id: Unique identifier for the CRM object\n- prop"
+  },
+  {
+   "name": "get_properties",
+   "description": "Fetches property definitions including data types and enumeration values.\n\n<capabilities>\n- Particularly useful for discovering valid options in enumeration-type properties\n- To search for actual data, use search_crm_objects\n</capabilities>\n\n<returns>\nList of property definition objects containing:\n- name: Property identifier\n- label: Display label\n- description: Property description\n- type: Data type (string, enumeration, number, etc.)\n- options: For enumeration types, list of valid values with labels\n</returns>\n\n<usage_guidance>\n- Property details can be unexpectedly large. Consider fetching"
+  },
+  {
+   "name": "submit_feedback",
+   "description": "Collects and submits feedback to HubSpot on dissatisfaction or user request.\n\n<when_to_invoke>\n  <agent_detected_signals>\n  - User provides explicit correction: \"No, I meant...\", \"Actually, I want...\"\n  - User repeats query with different phrasing\n  - User states something is wrong: \"That's wrong\", \"That's not right\"\n  - User clarifies because agent misunderstood\n  - User shows dissatisfaction\n  </agent_detected_signals>\n\n  <user_initiated_signals>\n  - Explicit feedback requests: \"I want to give feedback\", \"Let me share feedback\"\n  - Indirect expressions to HubSpot: \"HubSpot should know...\", \""
+  },
+  {
+   "name": "search_owners",
+   "description": "Lists and searches for owners who can be assigned to CRM records.\n\n<capabilities>\n- Supports searching by name/email or batch lookup by owner IDs\n- HubSpot owner ids and user IDs are distinct, lookups only work when owner ids are provided specifically\n</capabilities>\n\n<returns>\nList of owner objects containing:\n- ownerId: The ID to use for hubspot_owner_id assignments\n- name: Display name of the owner\n- isActive: Whether the owner is currently active\n</returns>\n\n<examples>\n  <example>\n    <description>Search by name</description>\n    <query>{\"searchQuery\": \"John Smith\"}</query>\n  </example>\n\n "
+  },
+  {
+   "name": "search_properties",
+   "description": "Finds the most relevant CRM property definitions using keyword-based search.\n\n<capabilities>\n- Lists all property definitions for specified object type when no search terms provided\n- To search for actual data, use search_crm_objects\n</capabilities>\n\n<returns>\nA filtered list of properties matching the search criteria containing:\n- name: Property identifier\n- label: Display label\n- description: Property description\n- matchScore: Relevance score for the property based on the search query (absent if no query is provided)\n</returns>\n\n<usage_guidance>\n- Use keywords field for multiple related prop"
+  },
+  {
+   "name": "get_crm_objects",
+   "description": "Fetches multiple CRM objects of the same object type in a single request.\n\n<returns>\nA list of CRM objects with their properties, identified by their unique IDs, containing:\n- id: Unique identifier for the CRM object\n- properties: Key-value pairs of property names and their values\n- createdAt: Timestamp when the object was created\n- updatedAt: Timestamp when the object was last updated\n- url: URL to view the object in HubSpot\n</returns>\n\n<usage_guidance>\n- Use the `search_crm_objects` tool to list a few objects first without a filter criteria\n- Then use the `get_crm_objects` tool to retrieve t"
+  },
+  {
+   "name": "get_user_details",
+   "description": "Returns user and hub info; CRM/marketing object read/write availability.\n\n<usage_guidance>\n- This tool must be used before performing any operations with Hubspot tools to determine the identity of the user, and permissions they have on their Hubspot account\n- This tool only return information for the current user. Search for \"users\" objectType using the search_crm_objects tool to find other users/owners in the HubSpot account\n- This tool provides the availability of crm object types to the current user. Use these values in tools which expect crm object type parameters\n- This tool provides more"
+  }
+ ]
+}

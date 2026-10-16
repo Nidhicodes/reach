@@ -1,0 +1,45 @@
+{
+ "server": "googlecalendar",
+ "display_name": "Google Calendar",
+ "description": "Create, update, and delete Google Calendar events, list calendars and events, respond to invitations, and find times when everyone is free.",
+ "source_url": "https://smithery.ai/servers/googlecalendar",
+ "fetched_at": "2026-10-15T12:49:43Z",
+ "tools": [
+  {
+   "name": "Arcade_ListApps",
+   "description": "See the apps the current caller can act on and whether they are connected. Returns each app's id, name, connected state, and (when connected) the account it is connected as. Call this to answer \"what apps do I have?\" or when the caller's connection state may have changed since the session started."
+  },
+  {
+   "name": "GoogleCalendar_CreateEvent",
+   "description": "Create a new event/meeting/sync/meetup in the specified calendar.\n\nPass `recurrence` to create a repeating event."
+  },
+  {
+   "name": "GoogleCalendar_DeleteEvent",
+   "description": "Delete an event from Google Calendar."
+  },
+  {
+   "name": "GoogleCalendar_FindTimeSlotsWhenEveryoneIsFree",
+   "description": "Provides time slots when everyone is free within a given date range and time boundaries."
+  },
+  {
+   "name": "GoogleCalendar_ListCalendars",
+   "description": "List all calendars accessible by the user."
+  },
+  {
+   "name": "GoogleCalendar_ListEvents",
+   "description": "List events from the specified calendar within the given datetime range.\n\nmin_end_datetime serves as the lower bound (exclusive) for an event's end time.\nmax_start_datetime serves as the upper bound (exclusive) for an event's start time.\n\nFor example:\nIf min_end_datetime is set to 2024-09-15T09:00:00 and max_start_datetime\nis set to 2024-09-16T17:00:00, the function will return events that:\n1. End after 09:00 on September 15, 2024 (exclusive)\n2. Start before 17:00 on September 16, 2024 (exclusive)\nThis means an event starting at 08:00 on September 15 and\nending at 10:00 on September 15 would b"
+  },
+  {
+   "name": "GoogleCalendar_RespondToEvent",
+   "description": "Accept or decline (RSVP to) a meeting invitation on the authenticated user's behalf.\n\nSets the user's responseStatus for an event they were invited to."
+  },
+  {
+   "name": "GoogleCalendar_UpdateEvent",
+   "description": "Update an existing event in the specified calendar with the provided details.\nOnly the provided fields will be updated; others will remain unchanged.\n\n`updated_start_datetime` and `updated_end_datetime` are\nindependent and can be provided separately."
+  },
+  {
+   "name": "GoogleCalendar_WhoAmI",
+   "description": "Get comprehensive user profile and Google Calendar environment information.\n\nThis tool provides detailed information about the authenticated user including\ntheir name, email, profile picture, Google Calendar access permissions, and other\nimportant profile details from Google services."
+  }
+ ]
+}

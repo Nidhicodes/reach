@@ -1,0 +1,53 @@
+{
+ "server": "slack",
+ "display_name": "Slack",
+ "description": "Read Slack conversations, threads, and user directories, send messages, and invite users to channels.",
+ "source_url": "https://smithery.ai/servers/slack",
+ "fetched_at": "2026-10-15T12:49:39Z",
+ "tools": [
+  {
+   "name": "Arcade_ListApps",
+   "description": "See the apps the current caller can act on and whether they are connected. Returns each app's id, name, connected state, and (when connected) the account it is connected as. Call this to answer \"what apps do I have?\" or when the caller's connection state may have changed since the session started."
+  },
+  {
+   "name": "Slack_GetConversationMetadata",
+   "description": "Get metadata of a Channel, a Direct Message (IM / DM) or a Multi-Person (MPIM) conversation.\n\nUse this tool to retrieve metadata about a conversation with a conversation_id, a channel name,\nor by the user_id(s), username(s), and/or email(s) of the user(s) in the conversation.\n\nThis tool does not return the messages in a conversation. To get the messages, use the\n'Slack.GetMessages' tool instead.\n\nProvide exactly one of:\n- conversation_id; or\n- channel_name; or\n- any combination of user_ids, usernames, and/or emails."
+  },
+  {
+   "name": "Slack_GetMessages",
+   "description": "Get messages in a Slack Channel, DM (direct message) or MPIM (multi-person) conversation.\n\nProvide exactly one of:\n- conversation_id; or\n- channel_name; or\n- any combination of user_ids, usernames, and/or emails.\n\nTo filter messages by an absolute datetime, use 'oldest_datetime' and/or 'latest_datetime'. If\nonly 'oldest_datetime' is provided, it will return messages from the oldest_datetime to the\ncurrent time. If only 'latest_datetime' is provided, it will return messages since the\nbeginning of the conversation to the latest_datetime.\n\nTo filter messages by a relative datetime, use 'oldest_re"
+  },
+  {
+   "name": "Slack_GetThreadMessages",
+   "description": "Get messages in a Slack thread.\n\nA thread is a collection of messages grouped together as replies to a parent message.\nThis tool retrieves all messages in a specific thread, identified by the parent message's\ntimestamp (thread_ts).\n\nProvide exactly one of:\n- conversation_id; or\n- channel_name; or\n- any combination of user_ids, usernames, and/or emails.\n\nTo filter messages by an absolute datetime, use 'oldest_datetime' and/or 'latest_datetime'. If\nonly 'oldest_datetime' is provided, it will return messages from the oldest_datetime to the\ncurrent time. If only 'latest_datetime' is provided, it w"
+  },
+  {
+   "name": "Slack_GetUsersInConversation",
+   "description": "Get the users in a Slack conversation (Channel, DM/IM, or MPIM) by its ID or by channel name.\n\nProvide exactly one of conversation_id or channel_name. Prefer providing a conversation_id,\nwhen available, since the performance is better."
+  },
+  {
+   "name": "Slack_GetUsersInfo",
+   "description": "Get the information of one or more users in Slack by ID, username, and/or email.\n\nProvide any combination of user_ids, usernames, and/or emails. If you need to retrieve\ndata about multiple users, DO NOT CALL THE TOOL MULTIPLE TIMES. Instead, call it once\nwith all the user_ids, usernames, and/or emails.\n\nIf you need to get metadata or messages of a conversation, use the\n`Slack.GetConversationMetadata` or `Slack.GetMessages` tool instead. These\ntools accept user_ids, usernames, and/or emails. Do not retrieve users' info first,\nas it is inefficient."
+  },
+  {
+   "name": "Slack_InviteUsersToChannel",
+   "description": "Invite users to a Slack channel or MPIM (multi-person direct message).\n\nThis tool invites specified users to join a Slack conversation. It works with:\n- Public channels\n- Private channels\n- MPIMs (multi-person direct messages / group DMs)\n\nYou can specify users by their user IDs, usernames, or email addresses.\n\nProvide exactly one of channel_id or channel_name, and at least one of user_ids, usernames,\nor emails.\n\nThe tool will resolve usernames and emails to user IDs before inviting them.\nUp to 100 users may be invited at once."
+  },
+  {
+   "name": "Slack_ListConversations",
+   "description": "List metadata for Slack conversations (channels, DMs, MPIMs) the user is a member of.\n\nThis tool does not return the messages in a conversation. To get the messages, use the\n'Slack.GetMessages' tool instead."
+  },
+  {
+   "name": "Slack_ListUsers",
+   "description": "List all users in the authenticated user's Slack team.\n\nIf you need to get metadata or messages of a conversation, use the\n`Slack.GetConversationMetadata` tool or `Slack.GetMessages` tool instead. These\ntools accept a user_id, username, and/or email. Do not use this tool to first retrieve user(s),\nas it is inefficient."
+  },
+  {
+   "name": "Slack_SendMessage",
+   "description": "Send a message to a Channel, Direct Message (IM/DM), or Multi-Person (MPIM) conversation.\n\nCan send top-level messages or reply to an existing thread.\n\nProvide exactly one of:\n- channel_name; or\n- conversation_id; or\n- any combination of user_ids, usernames, and/or emails.\n\nIn case multiple user_ids, usernames, and/or emails are provided, the tool will open a\nmulti-person conversation with the specified people and send the message to it.\n\nTo reply to a thread, also provide thread_ts (the 'ts' field of the parent message).\nOptionally set reply_broadcast to true to also post the reply to the mai"
+  },
+  {
+   "name": "Slack_WhoAmI",
+   "description": "Get comprehensive user profile and Slack information.\n\nThis tool provides detailed information about the authenticated user including\ntheir name, email, profile picture, and other important profile details from\nSlack services."
+  }
+ ]
+}

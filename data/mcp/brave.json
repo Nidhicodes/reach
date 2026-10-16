@@ -1,0 +1,41 @@
+{
+ "server": "brave",
+ "display_name": "Brave Search",
+ "description": "Search the web with Brave's independent index \u2014 web, news, images, and videos. Bring your own subscription token from the [Brave Search API dashboard](https://api-dashboard.search.brave.com).",
+ "source_url": "https://smithery.ai/servers/brave",
+ "fetched_at": "2026-10-15T12:49:43Z",
+ "tools": [
+  {
+   "name": "brave_web_search",
+   "description": "Performs web searches using the Brave Search API and returns comprehensive search results with rich metadata. To chain into local-POI enrichment, pass `result_filter=locations` and feed the resulting `locations.results[].id` values into `brave_local_search`. To chain into the AI summarizer, pass `summary=true` and feed the returned `summarizer.key` into `brave_summarizer`."
+  },
+  {
+   "name": "brave_news_search",
+   "description": "Searches for news articles using Brave's News Search API. Use it when you need current news, breaking updates, or articles about specific topics."
+  },
+  {
+   "name": "brave_image_search",
+   "description": "Performs an image search using the Brave Search API. Helpful when you need pictures of people, places, things, graphic-design ideas, or art inspiration. Counts of up to 100 are supported."
+  },
+  {
+   "name": "brave_video_search",
+   "description": "Searches for videos using Brave's Video Search API. Returns structured video results with metadata."
+  },
+  {
+   "name": "brave_local_search",
+   "description": "Brave Local Search API returns enriched information (address, phone, hours, rating) for location-search results. Access requires the Brave Search API Pro plan; currently US-only. Two-step flow: first call `brave_web_search` with `result_filter=locations` to obtain `locations.results[].id`, then pass them here. NOTE: This tool takes location IDs from a prior web-search response; if you have a free-text query, call `brave_web_search` first."
+  },
+  {
+   "name": "brave_llm_context",
+   "description": "Retrieves pre-extracted, relevance-ranked web content using Brave's LLM Context API, optimized for AI agents, LLM grounding, and RAG pipelines. Unlike a traditional web search that returns links and short descriptions, this tool returns the actual substance of matching pages \u2014 text chunks, tables, code blocks, and structured data \u2014 so the model can reason over it directly. When relaying results in markdown-supporting environments, cite source URLs from the `sources` map."
+  },
+  {
+   "name": "brave_place_search",
+   "description": "Searches Brave's Place Search API. A single call may populate any combination of `results` (POIs), `cities`, `addresses`, `streets`, and `location` (the resolved search area), depending on the query shape. Use for POIs near coordinates or a named area, browsing general POIs (omit `query`, supply coords or `location`), disambiguating bare city names, resolving specific addresses, or looking up streets. Anchor via `latitude`+`longitude` or `location`; with neither, `query` is required."
+  },
+  {
+   "name": "brave_summarizer",
+   "description": "Retrieves AI-generated summaries of web search results. Two-step flow: first call `brave_web_search` with `summary=true` to obtain `summarizer.key`, then pass it here. Pro AI tier required."
+  }
+ ]
+}

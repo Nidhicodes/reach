@@ -1,0 +1,133 @@
+{
+ "server": "outlook",
+ "display_name": "Outlook",
+ "description": "Read, search, and send Outlook mail. Manage drafts, replies, folders, and attachments, including shared mailbox access.",
+ "source_url": "https://smithery.ai/servers/outlook",
+ "fetched_at": "2026-10-15T12:49:53Z",
+ "tools": [
+  {
+   "name": "Arcade_ListApps",
+   "description": "See the apps the current caller can act on and whether they are connected. Returns each app's id, name, connected state, and (when connected) the account it is connected as. Call this to answer \"what apps do I have?\" or when the caller's connection state may have changed since the session started."
+  },
+  {
+   "name": "MicrosoftOutlookMail_CreateAndSendEmail",
+   "description": "Create and immediately send a new email in Outlook to the specified recipients.\n\nReturns the sent message's ``message_id`` and ``conversation_id`` so callers\ncan immediately chain follow-ups (e.g. reply to what they just sent) without\nhaving to search Sent Items."
+  },
+  {
+   "name": "MicrosoftOutlookMail_CreateDraftEmail",
+   "description": "Compose a new draft email in Outlook"
+  },
+  {
+   "name": "MicrosoftOutlookMail_CreateDraftReply",
+   "description": "Create a reply or reply-all draft for an existing Outlook email without sending it.\n\nThe draft is threaded to the original message and saved to the Drafts folder,\nso it can be reviewed, edited, and sent later. For a reply-all, the original\nrecipients (excluding the mailbox owner) are populated automatically. This\ntool never sends the email."
+  },
+  {
+   "name": "MicrosoftOutlookMail_GetEmail",
+   "description": "Retrieve a single email message by its ID.\n\nReturns email metadata and body content. By default, the body is returned\nas plain text (HTML tags stripped) and capped at 5000 characters. Set\nbody_format to HTML to get the original markup. Use body_offset to\ncontinue reading long emails, or set max_body_characters to None for the\nfull body.\n\nUse this tool to read the full content of an email after finding it via\nsearch_emails or any listing tool."
+  },
+  {
+   "name": "MicrosoftOutlookMail_ListEmailAttachments",
+   "description": "List attachment metadata for an email message.\n\nReturns metadata only (name, size, type, etc.). Attachment content is not included.\nUse this tool when the user wants to know what files are attached to an email."
+  },
+  {
+   "name": "MicrosoftOutlookMail_ListEmails",
+   "description": "List emails in the user's mailbox across all folders.\n\nResults are sorted by sort_by in the sort_order direction.\nDefaults to newest first (receivedDateTime descending).\n\nSince this tool lists email across all folders, it may return sent items,\ndrafts, and other items that are not in the inbox."
+  },
+  {
+   "name": "MicrosoftOutlookMail_ListEmailsByProperty",
+   "description": "List emails in the user's mailbox across all folders filtering by a property.\n\nResults are sorted by sort_by in the sort_order direction.\nDefaults to newest first (receivedDateTime descending).\n\nSorting by RECEIVED_DATE_TIME works with any filter property. Sorting by\na different property (SUBJECT, SENDER, IMPORTANCE) while filtering by an\nunrelated property may fail due to a Microsoft Graph API restriction. If\nthis happens, either sort by RECEIVED_DATE_TIME, or use list_emails (no\nfilter) with the desired sort_by."
+  },
+  {
+   "name": "MicrosoftOutlookMail_ListEmailsInFolder",
+   "description": "List the user's emails in the specified folder.\n\nExactly one of `well_known_folder_name` or `folder_id` MUST be provided.\n\nResults are sorted by sort_by in the sort_order direction.\nDefaults to newest first (receivedDateTime descending)."
+  },
+  {
+   "name": "MicrosoftOutlookMail_ListMailFolders",
+   "description": "List mail folders in the user's mailbox.\n\nReturns folder names, IDs, unread counts, and total item counts.\nUse the folder ID in follow-up calls to list_emails_in_folder.\nOmit parent_folder_id to list top-level folders, or provide a folder ID\nto list its child folders."
+  },
+  {
+   "name": "MicrosoftOutlookMail_MoveEmailToFolder",
+   "description": "Move an email message to a different folder in Outlook.\n\nExactly one of `destination_well_known_folder_name` or\n`destination_folder_id` MUST be provided. Use `list_mail_folders` to\ndiscover custom folder IDs."
+  },
+  {
+   "name": "MicrosoftOutlookMail_ReplyToEmail",
+   "description": "Reply to an existing email in Outlook.\n\nUse this tool to reply to the sender or all recipients of the email.\nSpecify the reply_type to determine the scope of the reply."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SearchEmails",
+   "description": "Search emails across the user's entire mailbox.\n\nCombines full-text keyword search with structured filters for sender,\nread status, attachments, importance, and more. All provided parameters\nare combined with AND. Results are ordered by date sent (most recent first).\n\nEmail bodies are truncated to 255 characters for efficient skimming.\nUse get_email with the message_id to retrieve the full email content.\n\nUse this tool when the user wants to find emails by content, topic, sender,\nor a combination of criteria. For exact property filtering (e.g., by\nconversationId or flag status), use list_email"
+  },
+  {
+   "name": "MicrosoftOutlookMail_SendDraftEmail",
+   "description": "Send an existing draft email in Outlook.\n\nSends any un-sent message \u2014 draft, reply-draft, reply-all draft, or\nforward draft \u2014 and returns the message's ``message_id`` and\n``conversation_id`` so callers can chain follow-ups (e.g. reply to\nthe message they just sent) without searching Sent Items."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxCheckCapabilities",
+   "description": "Check which provided mailboxes are reachable via shared mailbox APIs.\n\nThis is a capability checker, not an Exchange permission inventory. It\nverifies whether each provided mailbox can be reached through a cheap,\nread-only Graph call. When checking multiple mailboxes, pass them together\nin one ``owner_emails`` list so results can be deduplicated and rate-limited\nconsistently. Microsoft Graph does not expose exact ``Send As`` vs ``Send\non behalf`` permissions, so the response names that limitation explicitly\ninstead of guessing."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxCreateAndSendEmail",
+   "description": "Create and immediately send an email from a shared or delegated mailbox.\n\nUse this when the user wants the email to be sent from a team inbox (like\nsales@ or support@) or from an executive's mailbox they have been\ndelegated access to, rather than from their own address."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxCreateDraftEmail",
+   "description": "Compose a new draft email in a shared or delegated mailbox."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxCreateDraftReply",
+   "description": "Create a reply or reply-all draft in a shared or delegated mailbox without sending it.\n\nThe draft is threaded to the original message and saved to the mailbox's\nDrafts folder, so it can be reviewed, edited, and sent later. For a\nreply-all, the original recipients (excluding the mailbox owner) are\npopulated automatically. This tool never sends the email."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxGetEmail",
+   "description": "Retrieve a single email from a shared or delegated mailbox by message ID.\n\nReturns email metadata and body content. By default, the body is returned\nas plain text (HTML tags stripped) and capped at 5000 characters. Use\nbody_offset to continue reading long emails, or set max_body_characters\nto None for the full body."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxListEmailAttachments",
+   "description": "List attachment metadata for an email in a shared or delegated mailbox."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxListEmails",
+   "description": "List emails in a shared or delegated mailbox, across all folders.\n\nResults are sorted by sort_by in the sort_order direction.\nDefaults to newest first (receivedDateTime descending)."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxListEmailsByProperty",
+   "description": "List emails in a shared or delegated mailbox filtered by a property.\n\nResults are sorted by sort_by in the sort_order direction.\nDefaults to newest first (receivedDateTime descending)."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxListEmailsInFolder",
+   "description": "List emails in a specific folder of a shared or delegated mailbox.\n\nExactly one of `well_known_folder_name` or `folder_id` MUST be provided.\n\nResults are sorted by sort_by in the sort_order direction.\nDefaults to newest first (receivedDateTime descending)."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxListMailFolders",
+   "description": "List mail folders in a shared or delegated mailbox.\n\nReturns folder names, IDs, unread counts, and total item counts.\nUse the folder ID when listing emails in a specific folder."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxMoveEmailToFolder",
+   "description": "Move an email message to a different folder in a shared or delegated mailbox.\n\nExactly one of `destination_well_known_folder_name` or\n`destination_folder_id` MUST be provided. Use\n`shared_mailbox_list_mail_folders` (with the same `owner_email`) to\ndiscover custom folder IDs; folder IDs are specific to the target\nmailbox."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxReplyToEmail",
+   "description": "Reply to an email in a shared or delegated mailbox.\n\nThe reply is sent from the shared mailbox address, not the signed-in\nuser's personal address. Specify reply_type to reply only to the sender\nor to all recipients."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxSearchEmails",
+   "description": "Search emails in a shared or delegated mailbox.\n\nCombines full-text keyword search with structured filters for sender,\nread status, attachments, importance, and more. All provided parameters\nare combined with AND. Results are ordered by date sent (most recent first).\n\nEmail bodies are truncated to 255 characters. Retrieve a message by its\nmessage ID when the full content is needed.\n\n.. note::\n   Search results may use a different Graph ID shape than list/get\n   results. Use returned message IDs directly for message retrieval and\n   ``conversation_id`` for deduplication across result sets."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxSendDraftEmail",
+   "description": "Send an existing draft email from a shared or delegated mailbox.\n\nThis tool can send any un-sent email in the shared mailbox:\n    - draft\n    - reply-draft\n    - reply-all draft\n    - forward draft\n\nReturns the message's ``message_id`` and ``conversation_id`` so callers\ncan chain follow-ups (e.g. reply to the message they just sent) without\nsearching Sent Items."
+  },
+  {
+   "name": "MicrosoftOutlookMail_SharedMailboxUpdateDraftEmail",
+   "description": "Update an existing draft email in a shared or delegated mailbox.\n\nOverwrites the subject and body of a draft (if provided) and modifies its\nrecipient lists by selectively adding or removing email addresses."
+  },
+  {
+   "name": "MicrosoftOutlookMail_UpdateDraftEmail",
+   "description": "Update an existing draft email in Outlook.\n\nThis tool overwrites the subject and body of a draft email (if provided),\nand modifies its recipient lists by selectively adding or removing email addresses.\n\nThis tool can update any un-sent email:\n    - draft\n    - reply-draft\n    - reply-all draft\n    - forward draft"
+  },
+  {
+   "name": "MicrosoftOutlookMail_WhoAmI",
+   "description": "Get comprehensive user profile and Outlook Mail environment information.\n\nThis tool provides detailed information about the authenticated user including\ntheir name, email, mailbox settings, automatic replies configuration, and other\nimportant profile details from Outlook Mail services."
+  }
+ ]
+}

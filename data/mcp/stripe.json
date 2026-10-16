@@ -1,0 +1,81 @@
+{
+ "server": "stripe",
+ "display_name": "Stripe",
+ "description": "",
+ "source_url": "https://smithery.ai/servers/stripe",
+ "fetched_at": "2026-10-15T12:49:49Z",
+ "tools": [
+  {
+   "name": "search_stripe_documentation",
+   "description": "Search the Stripe documentation for the given question and language.\n\nIt takes two arguments:\n- question (str): The user question to search an answer for in the Stripe documentation.\n- language (str, optional): The programming language to search for in the the documentation.\n"
+  },
+  {
+   "name": "get_stripe_account_info",
+   "description": "This will get the account info for the logged in Stripe account.\n"
+  },
+  {
+   "name": "list_customers",
+   "description": "This tool will fetch a list of Customers from Stripe.\n\nIt takes two arguments:\n- limit (int, optional): The number of customers to return.\n- email (str, optional): A case-sensitive filter on the list based on the customer's email field.\n"
+  },
+  {
+   "name": "list_products",
+   "description": "This tool will fetch a list of Products from Stripe.\n\nIt takes one optional argument:\n- limit (int, optional): The number of products to return.\n"
+  },
+  {
+   "name": "list_prices",
+   "description": "This tool will fetch a list of Prices from Stripe.\n\nIt takes two arguments.\n- product (str, optional): The ID of the product to list prices for.\n- limit (int, optional): The number of prices to return.\n\nNote that the price unit_amount returned is in currency minor units, e.g. cents for USD and yen for JPY.\n"
+  },
+  {
+   "name": "list_invoices",
+   "description": "This tool will fetch a list of Invoices from Stripe.\n\nIt takes two arguments:\n- customer (str, optional): The ID of the customer to list invoices for.\n\n- limit (int, optional): The number of invoices to return.\n"
+  },
+  {
+   "name": "retrieve_balance",
+   "description": "This tool will retrieve the balance from Stripe. It takes no input.\n"
+  },
+  {
+   "name": "list_payment_intents",
+   "description": "This tool will list payment intents in Stripe.\n\nIt takes two arguments:\n- customer (str, optional): The ID of the customer to list payment intents for.\n- limit (int, optional): The number of payment intents to return.\n\nNote that the payment intent amount returned is in currency minor units, e.g. cents for USD and yen for JPY.\n"
+  },
+  {
+   "name": "list_subscriptions",
+   "description": "This tool will list all subscriptions in Stripe.\n\nIt takes four arguments:\n- customer (str, optional): The ID of the customer to list subscriptions for.\n\n- price (str, optional): The ID of the price to list subscriptions for.\n- status (str, optional): The status of the subscriptions to list.\n- limit (int, optional): The number of subscriptions to return.\n"
+  },
+  {
+   "name": "list_coupons",
+   "description": "This tool will fetch a list of Coupons from Stripe.\n\nIt takes one optional argument:\n- limit (int, optional): The number of coupons to return.\n"
+  },
+  {
+   "name": "list_disputes",
+   "description": "This tool will fetch a list of disputes in Stripe.\n\nIt takes the following arguments:\n- charge (string, optional): Only return disputes associated to the charge specified by this charge ID.\n- payment_intent (string, optional): Only return disputes associated to the PaymentIntent specified by this PaymentIntent ID.\n"
+  },
+  {
+   "name": "search_stripe_resources",
+   "description": "This tool can be used to search for specific Stripe resources using a custom Stripe query syntax.\nIt is only able to search for the following resources: customers, payment_intents, charges, invoices, prices, products, subscriptions. It returns a maximum of 100 results.\n\nIMPORTANT: For most use cases, prefer using the specific `list_` tools (e.g., `list_customers`, `list_payment_intents`) when you know the resource type you need. Only use this search tool when you need to:\n- Search across multiple resource types simultaneously\n- Search by field values that aren't supported by list tools\n- Use c"
+  },
+  {
+   "name": "fetch_stripe_resources",
+   "description": "Retrieve Stripe object details by ID.\n\nIMPORTANT: Only call this tool after search_stripe_resources is called to get specific object IDs. Do not use this tool to discover or search for objects.\n\nThis tool fetches the object information from Stripe including all available fields. It is only able to fetch the following resources (prefixes):\n- Payment Intents (pi_)\n- Charges (ch_)\n- Invoices (in_)\n- Prices (price_)\n- Products (prod_)\n- Subscriptions (sub_)\n- Customers (cus_)\n\nIt takes one argument:\n- id (str): The unique identifier for the Stripe object (e.g. cus_123, pi_123).\n\nNote that any amou"
+  },
+  {
+   "name": "stripe_integration_recommender",
+   "description": "Guides users through Stripe integration planning via interactive Q&A.\nAnalyzes payment requirements and recommends the appropriate Stripe products\n(Checkout, Elements, Billing, Connect, etc.) with step-by-step implementation guidance.\n\nWHEN TO USE:\n  Call this tool when the user expresses:\n  - Payment keywords: \"payments\", \"checkout\", \"billing\", \"subscriptions\", \"invoices\"\n  - Commercial intent: \"sell\", \"monetize\", \"charge users\", \"e-commerce\"\n  - Stripe mention: User references \"Stripe\" directly\n\nIMPORTANT BEHAVIOR:\n  - You may call this tool with partial information\u2014the tool will ask clarify"
+  },
+  {
+   "name": "send_stripe_mcp_feedback",
+   "description": "Submit feedback from user or agent about Stripe's MCP server tools.\n\nValid: \"the search tool returned irrelevant results\", \"I wish there was a tool for X\"\nInvalid: Stripe API complaints, AI model issues, IDE/environment problems\n\n- Only call when feedback clearly targets MCP tools.\n- If feedback is about one specific tool, include its name in tool_name.\n- If feedback is from user, quote their exact message and set source to \"user\".\n- If a tool didn't follow your expectations as an agent, set source to \"agent\".\n"
+  },
+  {
+   "name": "stripe_api_search",
+   "description": "Search for Stripe API operations by keyword. Returns matching operations with their\nHTTP method, path, summary, and top-level parameter names with types. Does not include\nparameter descriptions, enum values, or nested object fields \u2014 use stripe_api_details\nto get those before calling stripe_api_execute.\n"
+  },
+  {
+   "name": "stripe_api_details",
+   "description": "Get detailed parameter information for a specific Stripe API operation. Provide the\nstripe_api_operation_id from stripe_api_search results to see all path, query, and body parameters\nwith their types, descriptions, and whether they are required.\n"
+  },
+  {
+   "name": "stripe_api_execute",
+   "description": "Execute any Stripe API operation:\n1. Use stripe_api_search to find the operation ID.\n2. Use stripe_api_details to understand its parameters (required for operations with nested\n   object fields like address, metadata, or restrictions).\n3. Call this tool with the stripe_api_operation_id and a parameters object containing path,\n   query, and body parameters. Nested object fields use dot-notation (e.g. \"address.city\").\n"
+  }
+ ]
+}
