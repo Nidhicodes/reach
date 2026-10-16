@@ -44,12 +44,12 @@ SEP = "__"
 # Legs of every call earlier in this task that did (or may still) run. 'pending' calls
 # are in flight in another gateway right now; counting them is the conservative choice.
 TASK_LEGS = """
-MATCH (:Task {id: $task})<-[:IN_TASK]-(c:Call)-[:CALLED]->(t:Tool)-[e:INGESTS|READS|SENDS_TO]->(n)
+MATCH (:Task {id: $task})<-[:IN_TASK]-(c:Call)-[:CALLED]->(t:Tool)-[e:INGESTS|READS|SENDS_TO|ACTS_ON]->(n)
 WHERE c.seq < $seq AND c.verdict IN ['allowed', 'pending', 'audit-would-block', 'approved']
 RETURN c.seq AS seq, c.agent AS agent, t.name AS tool, type(e) AS leg, n.name AS target
 ORDER BY seq
 """
-TOOL_LEGS = "MATCH (t:Tool {name: $tool})-[e:INGESTS|READS|SENDS_TO]->(n) RETURN type(e) AS leg, n.name AS target"
+TOOL_LEGS = "MATCH (t:Tool {name: $tool})-[e:INGESTS|READS|SENDS_TO|ACTS_ON]->(n) RETURN type(e) AS leg, n.name AS target"
 # Reserve a sequence number and record the call as 'pending' in ONE write query.
 # FalkorDB runs write queries on a graph one at a time, so two gateway processes can
 # never take the same seq, and whichever call reserves second sees the first one. That
@@ -113,13 +113,25 @@ def target(spec: dict):
     return StdioServerParameters(command=spec["command"], args=spec.get("args", []), env=env, cwd=spec.get("cwd"))
 
 
-def verdict(prior: list[dict], next_legs: list[dict], tool: str) -> dict:
-    """Pure decision. prior = legs of allowed calls earlier in this task."""
+POLICIES = {
+    # Willison's lethal trifecta: exfiltration only
+    "trifecta": ("SENDS_TO",),
+    # Meta's Agents Rule of Two: the third property is "change state or communicate externally"
+    "rule-of-two": ("SENDS_TO", "ACTS_ON"),
+}
+
+
+def verdict(prior: list[dict], next_legs: list[dict], tool: str, policy: str | None = None) -> dict:
+    """Pure decision. prior = legs of calls earlier in this task that ran or may run."""
+    policy = policy or os.environ.get("REACH_POLICY", "trifecta")
+    third = POLICIES[policy]
     ing = [p for p in prior if p["leg"] == "INGESTS"] + [{"tool": tool, **l} for l in next_legs if l["leg"] == "INGESTS"]
     rd = [p for p in prior if p["leg"] == "READS"] + [{"tool": tool, **l} for l in next_legs if l["leg"] == "READS"]
-    out = [{"tool": tool, **l} for l in next_legs if l["leg"] == "SENDS_TO"]
+    out = [{"tool": tool, **l} for l in next_legs if l["leg"] in third]
     if ing and rd and out:
-        return {"verdict": "blocked", "reason": "would complete the lethal trifecta in this task",
+        why = "would complete the lethal trifecta" if out[0]["leg"] == "SENDS_TO" else \
+            "would change state after untrusted input and private data (Rule of Two)"
+        return {"verdict": "blocked", "reason": f"{why} in this task", "policy": policy,
                 "path": {"untrusted": [ing[0]["target"], ing[0]["tool"], ing[0].get("agent", "")],
                          "private": [rd[0]["target"], rd[0]["tool"], rd[0].get("agent", "")],
                          "sink": [out[0]["target"], tool]}}
@@ -258,11 +270,14 @@ def main() -> None:
     ap.add_argument("--audit", action="store_true", help="log would-block calls but let them through")
     ap.add_argument("--ask", action="store_true", help="hold would-block calls for a human decision")
     ap.add_argument("--ask-timeout", type=float, default=120.0)
+    ap.add_argument("--policy", choices=sorted(POLICIES), help="trifecta (default) or rule-of-two")
     ap.add_argument("--only", help="comma-separated servers from --config to proxy (default: all)")
     a = ap.parse_args()
     from reach.db import connect
 
     mode = "audit" if a.audit else "ask" if a.ask else "block"
+    if a.policy:
+        os.environ["REACH_POLICY"] = a.policy
     ups = load_config(a.config)
     if a.only:
         keep = set(a.only.split(","))
