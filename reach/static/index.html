@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reach - what can your agents reach if injected?</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6' fill='%23f85149'/%3E%3C/svg%3E">
+<script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--line:#30363d;--fg:#e6edf3;--mute:#9da7b3;--src:#f0883e;--agent:#58a6ff;--data:#d2a8ff;--sink:#ff7b72;--ok:#3fb950;--bad:#f85149}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{display:flex;gap:16px;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line)}
+header h1{font-size:18px;margin:0}header .tag{color:var(--mute)}
+select,button,input{background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font:inherit}
+button{cursor:pointer}button:hover,button:focus-visible{border-color:var(--agent);outline:none}
+button.primary{background:#1f6feb;border-color:#1f6feb}
+main{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(470px,1fr);height:calc(100vh - 58px)}
+#cywrap{border-right:1px solid var(--line);position:relative;min-height:0}
+#cy{position:absolute;inset:0}
+.legend{position:absolute;left:12px;bottom:10px;display:flex;gap:12px;color:var(--mute);font-size:12px;z-index:2}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.cols{position:absolute;top:8px;left:0;right:0;height:16px;color:var(--mute);font-size:12px;letter-spacing:.05em;text-transform:uppercase;z-index:2;pointer-events:none}
+.cols span{position:absolute;white-space:nowrap}
+aside{display:flex;flex-direction:column;min-height:0}
+[role=tablist]{display:flex;border-bottom:1px solid var(--line)}
+[role=tab]{flex:1;border:0;border-radius:0;background:none;padding:10px 4px;font-size:13px;color:var(--mute);border-bottom:2px solid transparent;white-space:nowrap}
+.sev{display:inline-block;font-size:11px;border-radius:4px;padding:0 6px;margin-right:6px}
+.sev-all-legs-auto-approved{background:#3d1214;color:#ffb3ad}.sev-partly-auto-approved{background:#3a2a0b;color:#f2cc60}.sev-needs-approval{background:#1c2128;color:var(--mute)}
+.bar{display:inline-block;height:6px;background:var(--sink);border-radius:3px;margin-right:6px;vertical-align:middle;max-width:75%}
+code{font-size:12px;background:var(--panel);padding:0 4px;border-radius:4px}
+[role=tab][aria-selected=true]{color:var(--fg);border-bottom-color:var(--agent)}
+section{padding:14px 16px;overflow:auto;flex:1}section[hidden]{display:none}
+.path{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:0 0 8px;cursor:pointer;background:var(--panel)}
+.path:hover,.path:focus-visible,.path.sel{border-color:var(--sink);outline:none}
+.hop{white-space:nowrap}.arrow{color:var(--mute);margin:0 4px}
+.k-Source{color:var(--src)}.k-Agent{color:var(--agent)}.k-Data{color:var(--data)}.k-Sink{color:var(--sink)}
+pre{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;overflow:auto;font-size:12px;white-space:pre-wrap}
+.ev{font-family:ui-monospace,Menlo,monospace;font-size:12px;padding:3px 0;border-bottom:1px dashed var(--line)}
+.BLOCKED{color:var(--bad);font-weight:600}.delegated{color:var(--agent)}
+.verdict{padding:8px 10px;border-radius:8px;margin:8px 0 14px;font-weight:600}
+.leak{background:#3d1214;color:#ffb3ad}.safe{background:#0f2e19;color:#9be9a8}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.muted{color:var(--mute)}h3{margin:16px 0 6px;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:12px}td,th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Reach</h1><span class="tag">If this agent gets prompt-injected, what can it reach, and where can it send it?</span>
+  <span style="flex:1"></span>
+  <label>Estate <select id="estate" aria-label="Estate">
+    <option value="demo">Acme (synthetic, 5 agents)</option>
+    <option value="real">Real MCP tools (18 servers, 557 tools)</option>
+    <option value="gateway">Gateway (learned from live calls)</option>
+    <option value="sample">Sample laptop (synthetic configs)</option>
+    <option value="mine" id="opt-mine">This machine (local only)</option>
+  </select></label>
+</header>
+<main>
+  <div id="cywrap">
+    <div id="cy" aria-label="Estate graph: untrusted sources, agents, private data, sinks"></div>
+    <div class="cols"><span>untrusted input</span><span>agents</span><span>private data</span><span>external sinks</span></div>
+    <div class="legend"><span><i style="background:var(--src)"></i>source</span><span><i style="background:var(--agent)"></i>agent</span><span><i style="background:var(--data)"></i>data</span><span><i style="background:var(--sink)"></i>sink</span><span>dashed = delegation, dotted = tool not granted</span></div>
+  </div>
+  <aside>
+    <div role="tablist" aria-label="Views">
+      <button role="tab" aria-selected="true" aria-controls="t-paths" id="b-paths">Paths</button>
+      <button role="tab" aria-selected="false" aria-controls="t-choke" id="b-choke">Chokepoints</button>
+      <button role="tab" aria-selected="false" aria-controls="t-gw" id="b-gw">Gateway</button>
+      <button role="tab" aria-selected="false" aria-controls="t-setup" id="b-setup">My setup</button>
+      <button role="tab" aria-selected="false" aria-controls="t-red" id="b-red">Red team</button>
+      <button role="tab" aria-selected="false" aria-controls="t-hist" id="b-hist">History</button>
+      <button role="tab" aria-selected="false" aria-controls="t-ask" id="b-ask">Ask</button>
+    </div>
+    <section id="t-paths" role="tabpanel" aria-labelledby="b-paths">
+      <div id="paths-summary" class="muted">Loading...</div>
+      <div id="paths"></div>
+      <h3>Fix (proposal, needs human approval)</h3>
+      <div class="row"><button id="fix-zero">Without breaking workflows</button><button id="fix-all">Close everything</button></div>
+      <div id="fix"></div>
+      <h3>The Cypher that found these paths</h3>
+      <pre id="cypher"></pre>
+    </section>
+    <section id="t-choke" role="tabpanel" aria-labelledby="b-choke" hidden>
+      <p class="muted">Where one change removes the most risk. Ranked by how many attack paths cross each agent or per-agent tool (exact), then by FalkorDB <code>algo.betweenness</code> over a taint-flow projection of the estate (an estimate).</p>
+      <div id="choke"></div>
+      <h3>How could this reach that?</h3>
+      <p class="muted">Shortest route data can take, via <code>algo.SPpaths</code>. Crosses agent handoffs if that is the only way.</p>
+      <div class="row">
+        <select id="r-src" aria-label="From"></select><span class="arrow">-></span>
+        <select id="r-dst" aria-label="To"></select>
+        <button class="primary" id="r-go">Trace</button>
+      </div>
+      <div id="route"></div>
+      <h3>The Cypher</h3>
+      <pre id="choke-cypher"></pre>
+    </section>
+    <section id="t-gw" role="tabpanel" aria-labelledby="b-gw" hidden>
+      <p class="muted">Reach Gateway is an MCP proxy between an agent and its real MCP servers. Every call is checked against this task's earlier calls, which live in FalkorDB, so taint follows a handoff to another agent. Runs here use real MCP to sandboxed mock servers; each scenario runs with the gateway in audit mode, then enforcing.</p>
+      <div class="row"><button class="primary" data-gw="support">Poisoned ticket</button><button class="primary" data-gw="cross-agent">Poisoned web page, two agents</button>
+      <label id="gw-llm-wrap"><input type="checkbox" id="gw-llm"> real LLM victim (ticket only, slow)</label></div>
+      <div id="gw"></div>
+      <h3>Call ledger (stored in the graph)</h3>
+      <div id="ledger" class="muted">No calls yet.</div>
+    </section>
+    <section id="t-setup" role="tabpanel" aria-labelledby="b-setup" hidden>
+      <p class="muted">Reads MCP client configs (Claude Desktop, Claude Code, Cursor, Kiro agents, Windsurf, VS Code, Gemini CLI, Codex) and maps each client as an agent. Static mode: nothing is started. Only server names and env <em>key</em> names are kept, never values.</p>
+      <div class="row"><button class="primary" id="setup-sample">Scan the sample laptop</button><button id="setup-mine">Scan this machine</button></div>
+      <p class="muted" id="setup-note">"This machine" stays on this computer; do not screen-share it if your configs are private.</p>
+      <div id="setup"></div>
+    </section>
+    <section id="t-red" role="tabpanel" aria-labelledby="b-red" hidden>
+      <p class="muted">A poisoned input hijacks an agent in a sandbox (mock tools, synthetic data, nothing leaves the machine). Each scenario runs twice: guard off, then guard on.</p>
+      <div class="row"><button class="primary" data-scn="support">Poisoned support ticket</button><button class="primary" data-scn="cross-agent">Poisoned web page, cross-agent</button>
+      <label><input type="checkbox" id="use-llm"> real LLM victim</label></div>
+      <div id="red"></div>
+    </section>
+    <section id="t-hist" role="tabpanel" aria-labelledby="b-hist" hidden>
+      <p class="muted">Every scan is remembered in the graph. Change the estate, rescan, and Reach attributes each opened or closed path to the change that caused it.</p>
+      <div class="row">
+        <select id="ch-kind" aria-label="Change kind"><option>grant</option><option>revoke</option><option>use</option><option>unuse</option><option>delegate</option><option>undelegate</option></select>
+        <input id="ch-agent" placeholder="agent" aria-label="Agent" size="14">
+        <input id="ch-target" placeholder="scope / tool / agent" aria-label="Target" size="16">
+        <button id="ch-apply">Apply</button><button class="primary" id="scan">Rescan</button>
+      </div>
+      <div id="scan-out"></div>
+      <h3>Timeline</h3><div id="timeline"></div>
+    </section>
+    <section id="t-ask" role="tabpanel" aria-labelledby="b-ask" hidden>
+      <p class="muted">The agent picks from fixed MCP tools; it never writes Cypher. Any name in its answer that no tool returned gets the answer rejected.</p>
+      <div class="row"><input id="q" style="flex:1" value="If research-agent gets prompt-injected, what can it leak and how do we fix it?" aria-label="Question"><button class="primary" id="ask">Ask</button></div>
+      <div id="answer"></div>
+    </section>
+  </aside>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>
