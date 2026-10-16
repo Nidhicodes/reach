@@ -40,7 +40,9 @@ DELEGATION_VIEW = "MATCH (a:Agent)-[:DELEGATES_TO]->(b:Agent) RETURN a.name AS s
 
 
 ESTATES = ("demo", "real", "gateway", "sample", "mine")
-SAMPLE_DIR = Path(__file__).resolve().parents[1] / "examples" / "sample_setup"
+from reach.paths import EXAMPLES  # noqa: E402
+
+SAMPLE_DIR = EXAMPLES / "sample_setup"
 
 
 def public() -> bool:

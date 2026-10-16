@@ -162,5 +162,9 @@ def open_at(at_ms: int) -> dict:
     return oa(graph(), at_ms)
 
 
-if __name__ == "__main__":
+def main() -> None:
     mcp.run()
+
+
+if __name__ == "__main__":
+    main()

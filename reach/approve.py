@@ -16,6 +16,10 @@ from reach.db import connect
 from reach.gateway import decide, pending_approvals
 
 
+def cli() -> None:
+    sys.exit(main(sys.argv[1:]))
+
+
 def main(argv: list[str]) -> int:
     g = connect()
     if not argv:

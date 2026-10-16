@@ -15,7 +15,9 @@ import time
 import urllib.request
 
 REGISTRY = "https://registry.smithery.ai/servers"
-CACHE = pathlib.Path(__file__).resolve().parents[2] / "data" / "mcp"
+from reach.paths import DATA
+
+CACHE = DATA / "mcp"
 
 # Widely used, verified servers that cover all three legs of the trifecta.
 CURATED = [
