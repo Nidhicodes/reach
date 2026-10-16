@@ -31,7 +31,7 @@ def test_mcp_exposes_catalogue_and_guard(server):
             names = {t.name for t in (await c.list_tools()).tools}
             assert names == {"list_agents", "scan_paths", "explain_tool", "propose_fix", "guard_check",
                              "record_scan", "scan_timeline", "finding_history", "open_at",
-                             "chokepoints", "explain_reach"}
+                             "chokepoints", "explain_reach", "propose_hardening"}
             scan = _payload(await c.call_tool("scan_paths", {"agent": "support-bot"}))
             assert scan["outcome"] == "answered_with_path"
             g = _payload(await c.call_tool("guard_check", {
