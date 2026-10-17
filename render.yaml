@@ -1,10 +1,13 @@
 # Render Blueprint: New -> Blueprint -> pick this repo. Secrets marked sync:false are
 # entered in the Render dashboard, never committed.
+# Region: Singapore, the closest Render region to the FalkorDB Cloud instance (ap-south-1);
+# each page load runs several Cypher round trips, so DB latency adds up.
 services:
   - type: web
     name: reach
     runtime: docker
     plan: free
+    region: singapore
     healthCheckPath: /api/config
     envVars:
       - key: FALKORDB_HOST
@@ -16,13 +19,8 @@ services:
       - key: FALKORDB_PASSWORD
         sync: false
       - key: FALKORDB_TLS
-        sync: false
-      # Optional real-LLM Ask tab; capped by REACH_PUBLIC_LLM_PER_HOUR (0 = off)
-      - key: REACH_LLM_BASE_URL
-        sync: false
-      - key: REACH_LLM_API_KEY
-        sync: false
-      - key: REACH_LLM_MODEL
-        value: openai/gpt-oss-120b
+        value: "0"
+      # Real-LLM Ask tab stays off on the public demo. To enable: add REACH_LLM_BASE_URL and
+      # REACH_LLM_API_KEY in the dashboard and raise this budget (e.g. 30 calls/hour).
       - key: REACH_PUBLIC_LLM_PER_HOUR
         value: "0"
