@@ -117,9 +117,10 @@ async function loadFix(mode) {
     `${r.residual_paths.length} path(s) cannot be closed without breaking a workflow. The runtime guard (Red team tab) covers them.`));
 }
 
+const checked = (sel) => { const n = $(sel); return !!(n && n.checked); };  // the box is removed when LLM is off
 async function runRed(scn) {
   const box = $("#red"); box.replaceChildren(el("p", { class: "muted" }, "Running..."));
-  const r = await api("/api/redteam", { scenario: scn, llm: $("#use-llm").checked });
+  const r = await api("/api/redteam", { scenario: scn, llm: checked("#use-llm") });
   box.replaceChildren(el("p", { class: "muted" }, `victim: ${r.victim}`));
   r.runs.forEach((run) => {
     box.append(el("h3", {}, `Guard ${run.guard ? "ON" : "OFF"}`));
@@ -239,7 +240,7 @@ async function traceReach() {
 // ---------------------------------------------------------------- gateway
 async function runGateway(scn) {
   const box = $("#gw");
-  const llm = $("#gw-llm").checked;
+  const llm = checked("#gw-llm");
   box.replaceChildren(el("p", { class: "muted" }, llm ? "Running a real model twice through the gateway (rate limits can make this take a minute)..." : "Running..."));
   const r = await api("/api/gateway/run", { scenario: scn, llm });
   box.replaceChildren(el("p", { class: "muted" }, `victim: ${r.victim}`));
