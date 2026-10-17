@@ -10,6 +10,7 @@ def fresh(tmp_path, monkeypatch):
     monkeypatch.delenv("REACH_PUBLIC", raising=False)
     monkeypatch.delenv("REACH_LLM_BASE_URL", raising=False)
     web._graphs.clear()
+    web._sample_cache.clear()
     yield
     for g in web._graphs.values():
         try:

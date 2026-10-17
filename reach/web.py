@@ -140,6 +140,22 @@ def maybe_reset(force: bool = False) -> list[str]:
     return wiped
 
 
+def harden_sample() -> dict:
+    """Dry-run hardening plan for the bundled sample configs (writes nothing to disk)."""
+    from reach import harden
+
+    out = []
+    for f in sorted(SAMPLE_DIR.glob("*.json")):
+        r = harden.plan(connect("ui-harden", path=os.environ.get("REACH_DB_PATH", "reach_ui.db")), str(f))
+        r["file"] = f.name
+        r["diff"] = r["diff"].replace(str(SAMPLE_DIR) + "/", "")
+        out.append({k: v for k, v in r.items() if not k.startswith("_")})
+    return {"configs": out, "applied": False, "note": "Apply one with: reach-harden <file> --apply"}
+
+
+_sample_cache: dict = {}  # bundled sample: setup scan + hardening plan never change
+
+
 def prewarm(estates=("demo", "real", "sample")) -> None:
     """Seed graphs before a visitor asks for them (seeding is many write round trips)."""
     for e in estates:
@@ -148,6 +164,14 @@ def prewarm(estates=("demo", "real", "sample")) -> None:
                 graph(e)
         except Exception as exc:  # keep serving; the next request retries the seed
             print(f"prewarm {e} failed: {type(exc).__name__}: {exc}"[:300], flush=True)
+    if "sample" in estates:  # the two slowest clicks: compute once, off the request path
+        for key, fn in (("setup", lambda: scan_setup(graph("sample"), "sample")), ("harden", harden_sample)):
+            try:
+                with LOCK:
+                    if key not in _sample_cache:
+                        _sample_cache[key] = fn()
+            except Exception as exc:
+                print(f"prewarm {key} failed: {type(exc).__name__}: {exc}"[:300], flush=True)
 
 
 def graph(estate: str):
@@ -239,18 +263,15 @@ def api(method: str, path: str, q: dict, body: dict, ip: str = "local") -> dict:
         which = body.get("which", "sample")
         if which not in ("sample", "mine"):
             raise ValueError("which must be sample | mine")
+        if which == "sample":  # bundled files: the answer never changes, so compute it once
+            if "setup" not in _sample_cache:
+                _sample_cache["setup"] = scan_setup(graph("sample"), "sample")
+            return _sample_cache["setup"]
         return scan_setup(graph(which), which)
     if method == "POST" and path == "/api/harden":
-        from reach import harden
-
-        files = sorted(SAMPLE_DIR.glob("*.json"))  # dry run on the bundled sample only
-        out = []
-        for f in files:
-            r = harden.plan(connect("ui-harden", path=os.environ.get("REACH_DB_PATH", "reach_ui.db")), str(f))
-            r["file"] = f.name
-            r["diff"] = r["diff"].replace(str(SAMPLE_DIR) + "/", "")
-            out.append({k: v for k, v in r.items() if not k.startswith("_")})
-        return {"configs": out, "applied": False, "note": "Apply one with: reach-harden <file> --apply"}
+        if "harden" not in _sample_cache:
+            _sample_cache["harden"] = harden_sample()
+        return _sample_cache["harden"]
     if method == "POST" and path == "/api/gateway/run":
         from reach import gateway_demo
 
