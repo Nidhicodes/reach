@@ -99,3 +99,34 @@ def test_harden_endpoint_is_a_dry_run_on_the_sample():
     assert {p.name: p.read_text() for p in web.SAMPLE_DIR.glob("*.json")} == before
     assert not list(web.SAMPLE_DIR.glob("*.pre-reach.json"))
     json.dumps(r)
+
+
+def test_public_mode_llm_off_by_default_then_capped(monkeypatch):
+    monkeypatch.setenv("REACH_LLM_BASE_URL", "http://127.0.0.1:9/v1")
+    monkeypatch.setenv("REACH_PUBLIC", "1")
+    web._llm_hits.clear()
+    assert not web.llm_configured() and not web.llm_ok("1.2.3.4")
+    assert web.api("GET", "/api/config", {}, {})["llm"] is False
+    monkeypatch.setenv("REACH_PUBLIC_LLM_PER_HOUR", "4")
+    assert [web.llm_ok("1.2.3.4") for _ in range(4)] == [True, True, True, False]  # 3 per IP
+    assert web.llm_ok("5.6.7.8") and not web.llm_ok("9.9.9.9")  # global cap of 4 reached
+    assert not web.llm_ok("5.6.7.8", wanted=False)
+
+
+def test_public_rate_limit_per_ip(monkeypatch):
+    monkeypatch.setenv("REACH_PUBLIC", "1")
+    monkeypatch.setenv("REACH_RATE_PER_MIN", "3")
+    web._hits.clear()
+    assert [web.rate_ok("1.1.1.1") for _ in range(4)] == [True, True, True, False]
+    assert web.rate_ok("2.2.2.2")
+
+
+def test_public_reset_wipes_edits_and_reseeds(monkeypatch):
+    monkeypatch.setenv("REACH_PUBLIC", "1")
+    web.graph("demo")
+    web.api("POST", "/api/change", {}, {"estate": "demo", "kind": "revoke", "agent": "support-bot", "target": "mail:send"})
+    edited = len(web.api("GET", "/api/paths", {"estate": "demo"}, {})["paths"])
+    monkeypatch.setattr(web, "_last_reset", [0.0])
+    assert web.maybe_reset() and not web._graphs
+    assert len(web.api("GET", "/api/paths", {"estate": "demo"}, {})["paths"]) == edited + 1
+    assert not web.maybe_reset()  # not due again yet

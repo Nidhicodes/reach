@@ -195,7 +195,7 @@ def _payload(res) -> dict:
     return json.loads(res.content[0].text)
 
 
-async def ask(question: str, server) -> Answer:
+async def ask(question: str, server, use_llm: bool | None = None) -> Answer:
     """`server` is anything mcp Client accepts: the in-process MCPServer, a URL, or stdio params."""
     trace: list[Step] = []
     results: list[dict] = []
@@ -208,7 +208,9 @@ async def ask(question: str, server) -> Answer:
             results.append(res)
             return res
 
-        if not os.environ.get("REACH_LLM_BASE_URL"):
+        if use_llm is None:
+            use_llm = bool(os.environ.get("REACH_LLM_BASE_URL"))
+        if not use_llm:
             agents = [a["agent"] for a in (await call("list_agents", {}))["agents"]]
             results.pop(), trace.pop()  # roster lookup is routing, not evidence
             for name, args in offline_plan(question, agents):

@@ -258,6 +258,23 @@ classification is, not how accurate Reach's classifier is. This is why the gatew
 
 Comparison with Snyk Agent Scan, BloodHound and others: [docs/COMPARISON.md](docs/COMPARISON.md).
 
+## Deploy the public demo
+
+The UI ships as a container (`Dockerfile`, `render.yaml`) whose graph lives in **FalkorDB
+Cloud**: set `FALKORDB_HOST`, `FALKORDB_PORT`, `FALKORDB_USERNAME`, `FALKORDB_PASSWORD` (and
+`FALKORDB_TLS=1` for a TLS endpoint) as host secrets. Every estate seeds itself on first
+request, so an empty Cloud instance is enough.
+
+The demo is public and unauthenticated by design: it holds only synthetic estates and the
+gateway runs only reach in-process mock tools. The container sets `REACH_PUBLIC=1`, which:
+- refuses "Scan this machine"
+- resets the shared graphs every 30 minutes
+- rate-limits each client IP
+- keeps real-LLM calls off unless `REACH_PUBLIC_LLM_PER_HOUR` is above 0, and caps them when on
+
+Tested locally against a password-protected FalkorDB server with
+`uv run python scripts/smoke_public.py`.
+
 ## AI assistance disclosure
 
 Built with an AI coding assistant (Kiro). All code is reviewed and understood by the author.

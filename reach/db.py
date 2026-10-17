@@ -28,6 +28,8 @@ def connect(graph: str | None = None, path: str | None = None):
             port=int(os.environ.get("FALKORDB_PORT", "6379")),
             username=os.environ.get("FALKORDB_USERNAME"),
             password=os.environ.get("FALKORDB_PASSWORD"),
+            ssl=os.environ.get("FALKORDB_TLS") == "1",  # FalkorDB Cloud: TLS endpoint
+            ssl_check_hostname=os.environ.get("FALKORDB_TLS") == "1",
         )
     else:
         from redislite.falkordb_client import FalkorDB  # provided by falkordblite

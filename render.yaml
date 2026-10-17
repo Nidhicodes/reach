@@ -1,0 +1,28 @@
+# Render Blueprint: New -> Blueprint -> pick this repo. Secrets marked sync:false are
+# entered in the Render dashboard, never committed.
+services:
+  - type: web
+    name: reach
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/config
+    envVars:
+      - key: FALKORDB_HOST
+        sync: false
+      - key: FALKORDB_PORT
+        sync: false
+      - key: FALKORDB_USERNAME
+        sync: false
+      - key: FALKORDB_PASSWORD
+        sync: false
+      - key: FALKORDB_TLS
+        sync: false
+      # Optional real-LLM Ask tab; capped by REACH_PUBLIC_LLM_PER_HOUR (0 = off)
+      - key: REACH_LLM_BASE_URL
+        sync: false
+      - key: REACH_LLM_API_KEY
+        sync: false
+      - key: REACH_LLM_MODEL
+        value: openai/gpt-oss-120b
+      - key: REACH_PUBLIC_LLM_PER_HOUR
+        value: "0"

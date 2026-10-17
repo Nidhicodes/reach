@@ -3,10 +3,15 @@
 Run:  uv run python -m reach.web            -> http://127.0.0.1:8765
 Env:  REACH_HOST (default 127.0.0.1), PORT / REACH_PORT (default 8765)
 
-SECURITY: no authentication. Every endpoint works on synthetic estates in a sandbox
-(the red-team replay never touches a real tool), and the only writes are estate edits
-and scan memory on those synthetic graphs. Bind to loopback for local use; a public
-deploy should sit behind auth or be reset on a schedule.
+SECURITY: no authentication, by design: this is a public demo over synthetic estates in
+a sandbox (the red-team and gateway runs only talk to in-process mock tools), and the only
+writes are estate edits and scan memory on those synthetic graphs. Local use binds to
+loopback. A public deploy sets REACH_PUBLIC=1, which:
+  - refuses to read the host's own MCP configs ("This machine")
+  - resets every mutable demo graph every REACH_RESET_MINUTES (default 30)
+  - rate-limits each client IP (REACH_RATE_PER_MIN, default 120 requests/min)
+  - turns real-LLM calls off unless REACH_PUBLIC_LLM_PER_HOUR > 0, and then caps them
+    globally per hour and at 3 per IP per hour, so a visitor cannot burn the API key
 """
 
 from __future__ import annotations
@@ -15,6 +20,7 @@ import asyncio
 import json
 import os
 import threading
+import time
 from dataclasses import asdict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -46,8 +52,67 @@ SAMPLE_DIR = EXAMPLES / "sample_setup"
 
 
 def public() -> bool:
-    """REACH_PUBLIC=1 on any non-loopback deploy: disables reading this machine's configs."""
+    """REACH_PUBLIC=1 on any non-loopback deploy (see the module docstring)."""
     return os.environ.get("REACH_PUBLIC") == "1"
+
+
+# ------------------------------------------------------------ public-deploy guards
+_hits: dict[str, list[float]] = {}
+_llm_hits: dict[str, list[float]] = {}
+_last_reset = [time.time()]
+LLM_PER_IP_HOUR = 3
+
+
+def _window(log: dict, key: str, span: float) -> list[float]:
+    now = time.time()
+    log[key] = [t for t in log.get(key, []) if now - t < span]
+    return log[key]
+
+
+def rate_ok(ip: str) -> bool:
+    if not public():
+        return True
+    if len(_hits) > 10_000:  # bound memory under a spray of source IPs
+        _hits.clear()
+    w = _window(_hits, ip, 60)
+    w.append(time.time())
+    return len(w) <= int(os.environ.get("REACH_RATE_PER_MIN", "120"))
+
+
+def llm_configured() -> bool:
+    if not os.environ.get("REACH_LLM_BASE_URL"):
+        return False
+    return not public() or int(os.environ.get("REACH_PUBLIC_LLM_PER_HOUR", "0")) > 0
+
+
+def llm_ok(ip: str, wanted: bool = True) -> bool:
+    """Spend one real-LLM call for this client, or say no (callers then run offline)."""
+    if not (wanted and llm_configured()):
+        return False
+    if not public():
+        return True
+    total = sum(len(_window(_llm_hits, k, 3600)) for k in list(_llm_hits))
+    mine = _window(_llm_hits, ip, 3600)
+    if total >= int(os.environ.get("REACH_PUBLIC_LLM_PER_HOUR", "0")) or len(mine) >= LLM_PER_IP_HOUR:
+        return False
+    mine.append(time.time())
+    return True
+
+
+def maybe_reset() -> bool:
+    """Public deploys share one set of graphs between all visitors: wipe and reseed them on
+    a schedule so one visitor's edits (or junk) never stick. Called under LOCK."""
+    if not public() or time.time() - _last_reset[0] < 60 * float(os.environ.get("REACH_RESET_MINUTES", "30")):
+        return False
+    _last_reset[0] = time.time()
+    names = [f"ui-{e}" for e in ESTATES] + ["ui-harden"]
+    for n in names + [f"{n}:flow" for n in names]:
+        try:
+            connect(n, path=os.environ.get("REACH_DB_PATH", "reach_ui.db")).delete()
+        except Exception:
+            pass  # graph did not exist
+    _graphs.clear()
+    return True
 
 
 def graph(estate: str):
@@ -112,10 +177,11 @@ def estate_view(g) -> dict:
             "edges": edges, "delegations": Q.ro(g, DELEGATION_VIEW)}
 
 
-def api(method: str, path: str, q: dict, body: dict) -> dict:
+def api(method: str, path: str, q: dict, body: dict, ip: str = "local") -> dict:
     estate = (q.get("estate") or body.get("estate") or "demo")
     if path == "/api/config":
-        return {"public": public(), "llm": bool(os.environ.get("REACH_LLM_BASE_URL")), "estates": list(ESTATES)}
+        return {"public": public(), "llm": llm_configured(), "estates": list(ESTATES),
+                "reset_minutes": float(os.environ.get("REACH_RESET_MINUTES", "30")) if public() else None}
     g = graph(estate)
     if path == "/api/estate":
         return estate_view(g)
@@ -153,7 +219,7 @@ def api(method: str, path: str, q: dict, body: dict) -> dict:
     if method == "POST" and path == "/api/gateway/run":
         from reach import gateway_demo
 
-        use_llm = bool(body.get("llm")) and bool(os.environ.get("REACH_LLM_BASE_URL"))
+        use_llm = llm_ok(ip, bool(body.get("llm")))
         return gateway_demo.run(graph("gateway"), str(body.get("scenario", "")), use_llm)
     if method == "POST" and path == "/api/gateway/ask":
         from reach import gateway_demo
@@ -193,7 +259,7 @@ def api(method: str, path: str, q: dict, body: dict) -> dict:
 
         if estate != "demo" or body.get("scenario") not in SCENARIOS:
             raise ValueError("red-team runs on the demo estate: scenario support | cross-agent")
-        use_llm = bool(body.get("llm")) and bool(os.environ.get("REACH_LLM_BASE_URL"))
+        use_llm = llm_ok(ip, bool(body.get("llm")))
         runs = [replay(g, body["scenario"], guard, use_llm) for guard in (False, True)]
         return {"victim": "llm" if use_llm else "compromised (simulated fully-injected model)",
                 "runs": [{"guard": r.guard, "exfiltrated": r.exfiltrated,
@@ -203,7 +269,7 @@ def api(method: str, path: str, q: dict, body: dict) -> dict:
         from reach.agent import ask
 
         mcp_server.graph = lambda g=g: g  # MCP tools read the same handle this process holds
-        a = asyncio.run(ask(str(body.get("question", ""))[:500], mcp_server.mcp))
+        a = asyncio.run(ask(str(body.get("question", ""))[:500], mcp_server.mcp, use_llm=llm_ok(ip)))
         return {"text": a.text, "outcome": a.outcome, "checked": a.checked, "planner": a.planner,
                 "trace": [asdict(s) for s in a.trace]}
     raise KeyError(path)
@@ -215,6 +281,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(payload)))
         self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header("X-Frame-Options", "DENY")
         self.end_headers()
         self.wfile.write(payload)
 
@@ -226,6 +294,12 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, (STATIC / "app.js").read_bytes(), "text/javascript; charset=utf-8")
         if not u.path.startswith("/api/"):
             return self._send(404, b"not found", "text/plain")
+        ip = self.client_address[0]
+        if public() and self.headers.get("X-Forwarded-For"):
+            # the platform's proxy appends the address it saw; earlier entries are client-supplied
+            ip = self.headers["X-Forwarded-For"].split(",")[-1].strip()
+        if not rate_ok(ip):
+            return self._send(429, b'{"error": "rate limited: slow down"}', "application/json")
         q = {k: v[0] for k, v in parse_qs(u.query).items()}
         body = {}
         try:
@@ -233,7 +307,8 @@ class Handler(BaseHTTPRequestHandler):
                 n = min(int(self.headers.get("Content-Length") or 0), 64_000)
                 body = json.loads(self.rfile.read(n) or b"{}")
             with LOCK:
-                out = api(method, u.path, q, body)
+                maybe_reset()
+                out = api(method, u.path, q, body, ip)
             code = 200
         except KeyError:
             out, code = {"error": "unknown endpoint"}, 404
