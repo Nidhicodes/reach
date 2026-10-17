@@ -1,13 +1,14 @@
 # Render Blueprint: New -> Blueprint -> pick this repo. Secrets marked sync:false are
 # entered in the Render dashboard, never committed.
-# Region: Singapore, the closest Render region to the FalkorDB Cloud instance (ap-south-1);
-# each page load runs several Cypher round trips, so DB latency adds up.
+# Region: Render cannot move an existing service, so this matches the live one. The DB is
+# in ap-south-1; graphs are seeded once in the background and kept across restarts, so
+# only the first seed pays the cross-region round trips.
 services:
   - type: web
     name: reach
     runtime: docker
     plan: free
-    region: singapore
+    region: oregon
     healthCheckPath: /api/config
     envVars:
       - key: FALKORDB_HOST

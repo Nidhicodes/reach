@@ -127,6 +127,9 @@ def test_public_reset_wipes_edits_and_reseeds(monkeypatch):
     web.api("POST", "/api/change", {}, {"estate": "demo", "kind": "revoke", "agent": "support-bot", "target": "mail:send"})
     edited = len(web.api("GET", "/api/paths", {"estate": "demo"}, {})["paths"])
     monkeypatch.setattr(web, "_last_reset", [0.0])
-    assert web.maybe_reset() and not web._graphs
+    monkeypatch.setattr(web, "prewarm", lambda estates=(): None)  # reseed lazily below
+    web.graph("real")  # untouched: must survive the reset
+    assert web.maybe_reset() == ["demo"] and "demo" not in web._graphs and "real" in web._graphs
     assert len(web.api("GET", "/api/paths", {"estate": "demo"}, {})["paths"]) == edited + 1
-    assert not web.maybe_reset()  # not due again yet
+    assert web.maybe_reset() == []  # not due again yet
+    assert web.maybe_reset(force=True) == []  # reseeded demo is clean again

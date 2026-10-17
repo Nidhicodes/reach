@@ -99,20 +99,55 @@ def llm_ok(ip: str, wanted: bool = True) -> bool:
     return True
 
 
-def maybe_reset() -> bool:
-    """Public deploys share one set of graphs between all visitors: wipe and reseed them on
-    a schedule so one visitor's edits (or junk) never stick. Called under LOCK."""
-    if not public() or time.time() - _last_reset[0] < 60 * float(os.environ.get("REACH_RESET_MINUTES", "30")):
-        return False
-    _last_reset[0] = time.time()
-    names = [f"ui-{e}" for e in ESTATES] + ["ui-harden"]
-    for n in names + [f"{n}:flow" for n in names]:
+def _dirty(estate: str, g) -> bool:
+    """Has a visitor changed this graph since it was seeded? Read from the graph itself, so
+    the answer survives a restart (a free host sleeps; FalkorDB Cloud keeps the data)."""
+    def n(q: str) -> int:
         try:
-            connect(n, path=os.environ.get("REACH_DB_PATH", "reach_ui.db")).delete()
+            return (Q.ro(g, q) or [{"n": 0}])[0]["n"]
         except Exception:
-            pass  # graph did not exist
-    _graphs.clear()
-    return True
+            return 0  # graph does not exist yet
+    if estate == "gateway":  # filled only by visitors' gateway runs
+        return n("MATCH (x) RETURN count(x) AS n") > 0
+    if estate in ("demo", "real"):  # seeded with exactly one baseline scan and no changes
+        return n("MATCH (c:Change) RETURN count(c) AS n") > 0 or n("MATCH (s:Scan) RETURN count(s) AS n") > 1
+    return False  # sample is re-derived on every scan; mine is refused when public
+
+
+def maybe_reset(force: bool = False) -> list[str]:
+    """Public deploys share one set of graphs between all visitors: on a schedule, wipe the
+    ones a visitor changed and reseed them in the background, so edits never stick and no
+    visitor waits on a reseed. Untouched graphs are kept. Called under LOCK."""
+    if not public():
+        return []
+    if not force and time.time() - _last_reset[0] < 60 * float(os.environ.get("REACH_RESET_MINUTES", "30")):
+        return []
+    _last_reset[0] = time.time()
+    db_path = os.environ.get("REACH_DB_PATH", "reach_ui.db")
+    wiped = []
+    for e in ("demo", "real", "gateway"):
+        g = _graphs.get(e) or connect(f"ui-{e}", path=db_path)
+        if not _dirty(e, g):
+            continue
+        for name in (f"ui-{e}", f"ui-{e}:flow"):
+            try:
+                connect(name, path=db_path).delete()
+            except Exception:
+                pass  # graph did not exist
+        _graphs.pop(e, None)
+        wiped.append(e)
+    threading.Thread(target=prewarm, args=([e for e in wiped if e != "gateway"],), daemon=True).start()
+    return wiped
+
+
+def prewarm(estates=("demo", "real", "sample")) -> None:
+    """Seed graphs before a visitor asks for them (seeding is many write round trips)."""
+    for e in estates:
+        try:
+            with LOCK:
+                graph(e)
+        except Exception as exc:  # keep serving; the next request retries the seed
+            print(f"prewarm {e} failed: {type(exc).__name__}: {exc}"[:300], flush=True)
 
 
 def graph(estate: str):
@@ -306,9 +341,12 @@ class Handler(BaseHTTPRequestHandler):
             if method == "POST":
                 n = min(int(self.headers.get("Content-Length") or 0), 64_000)
                 body = json.loads(self.rfile.read(n) or b"{}")
-            with LOCK:
-                maybe_reset()
+            if u.path == "/api/config":  # health check: never waits behind a seed holding LOCK
                 out = api(method, u.path, q, body, ip)
+            else:
+                with LOCK:
+                    maybe_reset()
+                    out = api(method, u.path, q, body, ip)
             code = 200
         except KeyError:
             out, code = {"error": "unknown endpoint"}, 404
@@ -332,6 +370,12 @@ def main():
     host = os.environ.get("REACH_HOST", "127.0.0.1")
     port = int(os.environ.get("PORT") or os.environ.get("REACH_PORT", "8765"))
     print(f"Reach UI on http://{host}:{port}  (no auth: synthetic sandbox only)")
+    if public():
+        def boot():
+            with LOCK:
+                maybe_reset(force=True)  # wipe what visitors changed before the last restart
+            prewarm()
+        threading.Thread(target=boot, daemon=True).start()
     ThreadingHTTPServer((host, port), Handler).serve_forever()
 
 
