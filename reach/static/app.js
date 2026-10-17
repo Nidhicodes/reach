@@ -269,7 +269,8 @@ async function loadLedger() {
   const t = el("table", {}, el("tr", {}, ...["task", "#", "agent", "tool", "verdict"].map((h) => el("th", {}, h))));
   r.calls.slice(0, 60).forEach((c) => t.append(el("tr", {},
     el("td", {}, c.task), el("td", {}, String(c.seq)), el("td", { class: "k-Agent" }, c.agent), el("td", {}, c.tool),
-    el("td", { class: ["blocked", "denied"].includes(c.verdict) ? "BLOCKED" : c.verdict === "audit-would-block" ? "k-Source" : "" }, c.verdict))));
+    el("td", { class: ["blocked", "denied"].includes(c.verdict) ? "BLOCKED" : ["audit-would-block", "pending"].includes(c.verdict) ? "k-Source" : "" },
+      c.verdict === "pending" ? "pending (held for a human)" : c.verdict))));
   $("#ledger").replaceChildren(t);
 }
 
@@ -298,6 +299,8 @@ async function runAsk(scn) {
       no.addEventListener("click", () => decideIt(false));
       box.replaceChildren(el("p", { class: "muted" }, `task ${task}: the call is held in the gateway until you decide.`), card);
       yes.focus();
+      // Show this task's calls (including the held one) now, not only after the decision.
+      loadLedger().catch(() => {});
     }
     await new Promise((r) => setTimeout(r, 500));
   }
@@ -357,6 +360,8 @@ async function proposeHardening() {
   const box = $("#harden-out");
   box.replaceChildren(el("p", { class: "muted" }, "Planning edits for each config..."));
   const r = await api("/api/harden", {});
+  // The plan is for the sample laptop, so the graph should show that estate too.
+  if (estate() !== "sample") { $("#estate").value = "sample"; await loadAll(); }
   box.replaceChildren(el("p", { class: "muted" }, `Dry run: nothing is written. ${r.note}`));
   r.configs.forEach((c) => {
     const card = el("div", { class: "card" }, el("strong", {}, `${c.agent} (${c.file}): ${c.paths} path(s)`));
