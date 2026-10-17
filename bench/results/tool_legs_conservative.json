@@ -477,12 +477,14 @@
  },
  "agentdojo-slack.send_direct_message": {
   "legs": [
+   "external",
    "acts"
   ],
   "source": "conservative"
  },
  "agentdojo-slack.send_channel_message": {
   "legs": [
+   "external",
    "acts"
   ],
   "source": "conservative"

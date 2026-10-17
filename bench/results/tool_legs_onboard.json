@@ -25,6 +25,7 @@
  },
  "agentdojo-workspace.get_sent_emails": {
   "legs": [
+   "untrusted",
    "private"
   ],
   "source": "onboard"
@@ -38,6 +39,7 @@
  },
  "agentdojo-workspace.get_draft_emails": {
   "legs": [
+   "untrusted",
    "private"
   ],
   "source": "onboard"
@@ -57,6 +59,7 @@
  },
  "agentdojo-workspace.search_contacts_by_email": {
   "legs": [
+   "untrusted",
    "private"
   ],
   "source": "onboard"
@@ -67,12 +70,14 @@
  },
  "agentdojo-workspace.search_calendar_events": {
   "legs": [
+   "untrusted",
    "private"
   ],
   "source": "onboard"
  },
  "agentdojo-workspace.get_day_calendar_events": {
   "legs": [
+   "untrusted",
    "private"
   ],
   "source": "onboard"
@@ -286,12 +291,14 @@
  },
  "agentdojo-travel.search_calendar_events": {
   "legs": [
+   "untrusted",
    "private"
   ],
   "source": "onboard"
  },
  "agentdojo-travel.get_day_calendar_events": {
   "legs": [
+   "untrusted",
    "private"
   ],
   "source": "onboard"
@@ -380,12 +387,14 @@
  },
  "agentdojo-banking.get_most_recent_transactions": {
   "legs": [
+   "untrusted",
    "private"
   ],
   "source": "onboard"
  },
  "agentdojo-banking.get_scheduled_transactions": {
   "legs": [
+   "untrusted",
    "private"
   ],
   "source": "onboard"
@@ -426,6 +435,7 @@
  },
  "agentdojo-slack.read_channel_messages": {
   "legs": [
+   "untrusted",
    "private"
   ],
   "source": "onboard"
@@ -439,12 +449,14 @@
  },
  "agentdojo-slack.send_direct_message": {
   "legs": [
+   "external",
    "acts"
   ],
   "source": "onboard"
  },
  "agentdojo-slack.send_channel_message": {
   "legs": [
+   "external",
    "acts"
   ],
   "source": "onboard"

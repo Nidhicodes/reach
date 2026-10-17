@@ -135,9 +135,12 @@
  },
  "agentdojo-workspace.search_calendar_events": {
   "legs": [
+   "untrusted",
    "private"
   ],
-  "generic": [],
+  "generic": [
+   "untrusted"
+  ],
   "neighbours": [
    "discord.guilds.scheduled_events.get",
    "googlecalendar.GoogleCalendar_ListEvents",
@@ -146,9 +149,12 @@
  },
  "agentdojo-workspace.get_day_calendar_events": {
   "legs": [
+   "untrusted",
    "private"
   ],
-  "generic": [],
+  "generic": [
+   "untrusted"
+  ],
   "neighbours": [
    "discord.guilds.scheduled_events.get",
    "googlecalendar.GoogleCalendar_ListEvents",
@@ -161,7 +167,9 @@
    "external",
    "acts"
   ],
-  "generic": [],
+  "generic": [
+   "external"
+  ],
   "neighbours": [
    "googlecalendar.GoogleCalendar_CreateEvent",
    "discord.guilds.scheduled_events.create",
@@ -186,7 +194,9 @@
    "external",
    "acts"
   ],
-  "generic": [],
+  "generic": [
+   "external"
+  ],
   "neighbours": [
    "googlecalendar.GoogleCalendar_UpdateEvent",
    "discord.guilds.scheduled_events.get",
@@ -199,7 +209,9 @@
    "external",
    "acts"
   ],
-  "generic": [],
+  "generic": [
+   "external"
+  ],
   "neighbours": [
    "salesforce.SALESFORCE_ADD_CONTACT_TO_CAMPAIGN",
    "googlecalendar.GoogleCalendar_UpdateEvent",
@@ -340,9 +352,12 @@
  },
  "agentdojo-travel.get_rating_reviews_for_hotels": {
   "legs": [
+   "untrusted",
    "private"
   ],
-  "generic": [],
+  "generic": [
+   "untrusted"
+  ],
   "neighbours": [
    "hubspot.submit_feedback",
    "notion.notion-get-users",
@@ -395,9 +410,12 @@
  },
  "agentdojo-travel.get_rating_reviews_for_restaurants": {
   "legs": [
+   "untrusted",
    "private"
   ],
-  "generic": [],
+  "generic": [
+   "untrusted"
+  ],
   "neighbours": [
    "hubspot.submit_feedback",
    "discord.channels.polls.answers.get",
@@ -472,9 +490,12 @@
  },
  "agentdojo-travel.get_rating_reviews_for_car_rental": {
   "legs": [
+   "untrusted",
    "private"
   ],
-  "generic": [],
+  "generic": [
+   "untrusted"
+  ],
   "neighbours": [
    "hubspot.submit_feedback",
    "salesforce.SALESFORCE_SEARCH_ACCOUNTS",
@@ -521,7 +542,9 @@
    "external",
    "acts"
   ],
-  "generic": [],
+  "generic": [
+   "external"
+  ],
   "neighbours": [
    "googlecalendar.GoogleCalendar_CreateEvent",
    "googlecalendar.GoogleCalendar_UpdateEvent",
@@ -530,9 +553,12 @@
  },
  "agentdojo-travel.search_calendar_events": {
   "legs": [
+   "untrusted",
    "private"
   ],
-  "generic": [],
+  "generic": [
+   "untrusted"
+  ],
   "neighbours": [
    "googlecalendar.GoogleCalendar_ListEvents",
    "googlecalendar.GoogleCalendar_UpdateEvent",
@@ -541,9 +567,12 @@
  },
  "agentdojo-travel.get_day_calendar_events": {
   "legs": [
+   "untrusted",
    "private"
   ],
-  "generic": [],
+  "generic": [
+   "untrusted"
+  ],
   "neighbours": [
    "googlecalendar.GoogleCalendar_ListEvents",
    "googlecalendar.GoogleCalendar_ListCalendars",
@@ -565,9 +594,12 @@
  },
  "agentdojo-travel.reserve_hotel": {
   "legs": [
-   "private"
+   "private",
+   "external"
   ],
-  "generic": [],
+  "generic": [
+   "external"
+  ],
   "neighbours": [
    "Supabase.get_organization",
    "hubspot.get_user_details",
@@ -576,9 +608,12 @@
  },
  "agentdojo-travel.reserve_car_rental": {
   "legs": [
-   "private"
+   "private",
+   "external"
   ],
-  "generic": [],
+  "generic": [
+   "external"
+  ],
   "neighbours": [
    "hubspot.submit_feedback",
    "salesforce.SALESFORCE_FETCH_ACCOUNT_BY_ID_WITH_QUERY",
@@ -587,9 +622,12 @@
  },
  "agentdojo-travel.reserve_restaurant": {
   "legs": [
-   "private"
+   "private",
+   "external"
   ],
-  "generic": [],
+  "generic": [
+   "external"
+  ],
   "neighbours": [
    "Supabase.get_organization",
    "hubspot.submit_feedback",
@@ -625,7 +663,9 @@
   "legs": [
    "private"
   ],
-  "generic": [],
+  "generic": [
+   "private"
+  ],
   "neighbours": [
    "salesforce.SALESFORCE_GET_ACCOUNT",
    "salesforce.SALESFORCE_FETCH_ACCOUNT_BY_ID_WITH_QUERY",
@@ -637,7 +677,9 @@
    "external",
    "acts"
   ],
-  "generic": [],
+  "generic": [
+   "external"
+  ],
   "neighbours": [
    "salesforce.SALESFORCE_SEND_EMAIL",
    "salesforce.SALESFORCE_SEND_EMAIL_FROM_TEMPLATE",
@@ -650,7 +692,9 @@
    "external",
    "acts"
   ],
-  "generic": [],
+  "generic": [
+   "external"
+  ],
   "neighbours": [
    "discord.guilds.scheduled_events.create",
    "github.create_pull_request_with_copilot",
@@ -673,7 +717,9 @@
   "legs": [
    "private"
   ],
-  "generic": [],
+  "generic": [
+   "private"
+  ],
   "neighbours": [
    "stripe.retrieve_balance",
    "salesforce.SALESFORCE_GET_ACCOUNT",
@@ -682,9 +728,13 @@
  },
  "agentdojo-banking.get_most_recent_transactions": {
   "legs": [
+   "untrusted",
    "private"
   ],
-  "generic": [],
+  "generic": [
+   "untrusted",
+   "private"
+  ],
   "neighbours": [
    "github.get_latest_release",
    "stripe.list_payment_intents",
@@ -693,9 +743,13 @@
  },
  "agentdojo-banking.get_scheduled_transactions": {
   "legs": [
+   "untrusted",
    "private"
   ],
-  "generic": [],
+  "generic": [
+   "untrusted",
+   "private"
+  ],
   "neighbours": [
    "discord.guilds.scheduled_events.get",
    "stripe.list_payment_intents",
@@ -885,7 +939,9 @@
    "external",
    "acts"
   ],
-  "generic": [],
+  "generic": [
+   "external"
+  ],
   "neighbours": [
    "discord.webhooks.slack.create",
    "hubspot.submit_feedback",

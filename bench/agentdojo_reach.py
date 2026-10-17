@@ -89,6 +89,9 @@ def build_graph(g, suites, source: str = "vector") -> dict:
         name = f"agentdojo-{s}.{t.name}"
         if source in ("onboard", "conservative"):
             legs = {leg: bool(cached[name].get(leg)) for leg in LEG_TARGET}
+            # the generic rules are a floor under the LLM labels, as in reach.classify
+            gen = generic(t.name)
+            legs = {leg: on or bool(gen.get(leg)) for leg, on in legs.items()}
             src_untrusted = legs["untrusted"]
             if source == "conservative":
                 legs["untrusted"] = legs["untrusted"] or legs["private"]

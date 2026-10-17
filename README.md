@@ -209,20 +209,36 @@ is read, the attacker's ground-truth calls are executed. With no defense, 608 at
 (the remaining 341 can't succeed by construction) and 97 of 97 benign tasks complete. No
 AgentDojo tool was hand-labelled. Each tool's labels come from one of three sources.
 
-| tool labels | policy | attacks stopped (of 608) | benign tasks kept (of 97) |
-|---|---|---|---|
-| vector index only | trifecta | 187 | 81 |
-| LLM onboarding | trifecta + provenance | 281 | 87 |
-| LLM onboarding | rule-of-two | 298 | 79 |
-| conservative | trifecta + provenance (request+tools) | 488 | 78 |
-| conservative | rule-of-two | 552 | 48 |
+Two rounds: **before** and **after** adding third-party-content rules to the generic
+classifier (`g-reviews`, `g-transactions`, `g-calendar-read`, `g-money-out`, `g-booking-out`,
+`g-invite-out`, `g-publish-out` in `reach/classify.py`). They encode one principle: a field
+a stranger can write (a review, a transaction memo, a calendar invite) is an injection
+entry point even inside a private record; moving money or booking with an outside business
+is a sink. In the second round the rules are a floor under every label source.
 
-Full grid: `bench/results/replay.json`. Honest notes:
+| tool labels | policy | stopped of 608, before -> after | benign kept of 97, before -> after |
+|---|---|---|---|
+| vector index (zero touch) | trifecta + provenance | 187 -> 427 | 83 -> 70 |
+| vector index (zero touch) | rule-of-two + provenance | 196 -> 477 | 81 -> 65 |
+| LLM onboarding | trifecta + provenance | 281 -> 439 | 87 -> 69 |
+| conservative (every private tool also untrusted) | trifecta + provenance | 488 -> 495 | 78 -> 68 |
+| conservative | rule-of-two | 552 -> 552 | 48 -> 48 |
+
+"Provenance" here is `request+tools`. Full grids: `bench/results/replay.json` (after) and
+`bench/results/replay_before_rules.json` (before). Honest notes:
 - Replay is a worst-case upper bound on hijacking, not a measured attack success rate for a real model.
-- Every policy trades benign tasks for attacks stopped.
-- With vector or onboarding labels, almost nothing is stopped in travel and banking. Those
-  suites' attacks mostly use tools the labels don't mark as external sinks. Labelling is the
-  weak link, not the traversal.
+- **Contamination:** the new rules were written after looking at which AgentDojo suites
+  were missed (travel and banking: the gap was the *untrusted* leg, reviews and transaction
+  memos, not the sink). On the 557 real MCP tools the rules change almost nothing
+  (generic untrusted precision 0.52 -> 0.50, recall 0.22 -> 0.22), so they did not regress
+  the real corpus, but the AgentDojo gain is not a held-out result.
+- The rules move zero-touch labelling most of the way to fail-closed, not beyond it: the
+  "after" vector row is still dominated by the old conservative row (488 stopped, 73 kept
+  with `request` provenance), and they cost the conservative source 10 benign tasks.
+- Most newly broken benign tasks are legitimate trifectas, e.g. "book the best-reviewed
+  hotel" reads reviews (untrusted), the user's details (private) and then books (sink).
+  Provenance cannot vouch for a call with no destination address. In `--ask` mode these
+  are held for a human instead of failing.
 
 ## Classifier accuracy
 

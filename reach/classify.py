@@ -107,6 +107,26 @@ GENERIC_RULES: list[Rule] = [
     R("g-chat-send", "SENDS_TO", ANY, r"\b(send|post)\b.*\b(message|chat)\b", "chat-post", "Posts outside the agent"),
     R("g-cloud", "READS", ANY, r"\b(use aws|aws cli|gcloud|az cli|kubectl)\b", "cloud-resources",
       "Whatever the agent's cloud credentials can read"),
+    # ---- content written by third parties, and actions that hand data to them -------
+    # Principle (indirect prompt injection): any field a stranger can write is an entry
+    # point, even inside a "private" record. A bank statement carries the sender's memo, a
+    # review site carries reviewers' text, a calendar carries invites from anyone.
+    R("g-reviews", "INGESTS", ANY, r"\b(get|list|read|search|fetch|view)\b.*\b(reviews?|ratings?|feedback|testimonials?|comments?)\b", "third-party-text",
+      "Reviews, ratings and comments are written by members of the public"),
+    R("g-transactions", "INGESTS", ANY, r"\b(get|list|read|search|recent)\b.*\btransactions?\b", "third-party-text",
+      "A transaction's subject or memo is written by the counterparty"),
+    R("g-transactions-private", "READS", ANY, r"\b(get|list|read|search|recent)\b.*\btransactions?\b|\b(balance|iban|account number)\b", "financial-records",
+      "Account balances and transaction history"),
+    R("g-calendar-read", "INGESTS", ANY, r"\b(get|list|search|read)\b.*\b(calendar|events?)\b", "calendar-invites",
+      "Anyone can send a calendar invite with arbitrary text"),
+    R("g-money-out", "SENDS_TO", ANY, r"\b(send|transfer|pay|schedule|wire)\b.*\b(money|payments?|transactions?|funds|transfer)\b|\bsend money\b", "payment-out",
+      "Moves money (and its memo text) to any account"),
+    R("g-booking-out", "SENDS_TO", ANY, r"\b(reserve|book|booking)\b", "third-party-booking",
+      "A booking hands the user's details and free-text notes to an outside business"),
+    R("g-invite-out", "SENDS_TO", ANY, r"\b(create|update|add|reschedule)\b.*\b(calendar )?(event|invite|participants?)\b", "calendar-invite",
+      "Invites carry text to any attendee"),
+    R("g-publish-out", "SENDS_TO", ANY, r"\b(post|publish|upload)\b.*\b(web ?page|page|site|blog|tweet|status)\b", "public-web",
+      "Publishes content anyone can read"),
 ]
 
 
