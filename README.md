@@ -74,6 +74,52 @@ in ticket #4521, and `gpt-oss-20b` did not always reach the send step within the
 budget. Whether a model falls for an injection varies; the gateway's verdict does not
 depend on it.
 
+### Shared state across processes
+
+`reach-db` starts a FalkorDB server; every gateway pointed at it (`FALKORDB_HOST`) shares one
+task ledger, so a taint picked up by one client's gateway blocks a send in another client's
+gateway. Sequence numbers come from a single atomic `RESERVE` query, so concurrent calls on one
+task never collide.
+
+```bash
+uv run python -m reach.fleet --tasks 60 --procs 4
+```
+
+Measured on a laptop (6 processes, 60 two-agent tasks split across process pools, 230 guarded
+calls): 60 of 60 cross-process sends blocked, 0 leaked, 50 of 50 unique sequence numbers in a
+concurrent burst, guard latency p50 1.8 ms / p95 78 ms.
+
+### Ask a human instead of blocking
+
+`--ask` holds a would-block call as an `(:Approval)` node in the graph. Any process can decide it:
+the UI's approval card, `reach-approve`, or another gateway. If nobody decides before
+`--ask-timeout`, the call is denied. `--policy rule-of-two` is stricter than the trifecta. With
+`--provenance`, a risky send is still allowed when its destination is vouched for, meaning it
+appeared in the user's own request or in trusted tool output.
+
+### Harden a config (the agent acts)
+
+```bash
+reach-harden ~/.cursor/mcp.json            # proposal only
+reach-harden ~/.cursor/mcp.json --apply    # backs up the original, then writes the patch
+```
+
+Turns the fix plan into config edits, without removing any capability:
+- It takes auto-approval off each path's send step, so a person confirms every outbound send.
+- It moves every server on a path behind a single `reach-gateway` entry.
+
+`--apply` keeps the original as `<file>.pre-reach.json` and records the change in the graph as
+`(:Remediation)`. The UI's **My setup** tab shows the proposal and never applies it.
+
+## Install in one line
+
+```bash
+uvx --from git+<repo-url> reach-ui        # or reach-scan, reach-gateway, reach-harden, reach-mcp
+```
+
+The real-tool estate and labels ship inside the package, so no network access is needed at seed
+time.
+
 ## Scan my setup
 
 ```bash
@@ -154,6 +200,47 @@ definition. It does not show the definition captures every real attack. The base
 fail for a structural reason, not a tuning one: without the delegation edges they cannot
 see the 98 cross-agent paths, and without grants they report 69 paths through tools the
 agent cannot actually call.
+
+## Independent benchmark: AgentDojo v1.2.2
+
+`bench/agentdojo_reach.py` runs Reach as an AgentDojo runtime over all 949 injectable
+(user task, injection) pairs. **Replay mode** models a fully hijacked model: once the injection
+is read, the attacker's ground-truth calls are executed. With no defense, 608 attacks succeed
+(the remaining 341 can't succeed by construction) and 97 of 97 benign tasks complete. No
+AgentDojo tool was hand-labelled. Each tool's labels come from one of three sources.
+
+| tool labels | policy | attacks stopped (of 608) | benign tasks kept (of 97) |
+|---|---|---|---|
+| vector index only | trifecta | 187 | 81 |
+| LLM onboarding | trifecta + provenance | 281 | 87 |
+| LLM onboarding | rule-of-two | 298 | 79 |
+| conservative | trifecta + provenance (request+tools) | 488 | 78 |
+| conservative | rule-of-two | 552 | 48 |
+
+Full grid: `bench/results/replay.json`. Honest notes:
+- Replay is a worst-case upper bound on hijacking, not a measured attack success rate for a real model.
+- Every policy trades benign tasks for attacks stopped.
+- With vector or onboarding labels, almost nothing is stopped in travel and banking. Those
+  suites' attacks mostly use tools the labels don't mark as external sinks. Labelling is the
+  weak link, not the traversal.
+
+## Classifier accuracy
+
+`reach.classeval` scores the classifiers against 557 real tools, each labelled twice. The two
+labellers are **LLMs** (`gpt-oss-120b` and `gpt-oss-20b`), not humans. Scoring uses only the
+tools where both labellers agree.
+
+| leg | Cohen's kappa | curated rules (P / R) | vector index (P / R) |
+|---|---|---|---|
+| untrusted input | 0.25 | 0.77 / 0.38 | 0.34 / 0.21 |
+| private data | 0.24 | 1.00 / 0.22 | 0.94 / 0.80 |
+| external sink | 0.16 | 0.82 / 0.29 | 0.26 / 0.51 |
+
+The kappa values are low: the two labellers often disagree. These numbers say how hard tool
+classification is, not how accurate Reach's classifier is. This is why the gateway also offers
+`--ask` and a conservative mode.
+
+Comparison with Snyk Agent Scan, BloodHound and others: [docs/COMPARISON.md](docs/COMPARISON.md).
 
 ## AI assistance disclosure
 
