@@ -4,13 +4,15 @@
 
 Reach models an AI agent estate (agents, MCP tools, OAuth scopes, data, external channels, and agent-to-agent handoffs) as a graph in FalkorDB. It finds every *lethal trifecta* path (untrusted input + private data + an exfiltration channel), including paths that only exist **across** agents through delegation, and computes the smallest set of scope revocations that closes all of them.
 
-Status: hackathon scaffold (Graph Hacks, Oct 2026). Track: Agents That Act on Connected Data (+ Agent Memory and Coordination).
+**Live demo: [reach-lnwm.onrender.com](https://reach-lnwm.onrender.com)**: synthetic estates only, graph on FalkorDB Cloud. Free hosting sleeps when idle, so the first visit can take about a minute; every later click takes about a second. Two tabs show the main result: **Gateway** (a cross-agent exfiltration blocked live over MCP) and **Red team**.
+
+Status: Graph Hacks submission (Oct 2026). Track: Agents That Act on Connected Data (+ Agent Memory and Coordination).
 
 ## Quick start (no Docker needed)
 
 ```bash
 uv sync
-uv run python -m reach.seed     # load the synthetic Acme estate
+uv run python -m reach.web      # UI on http://127.0.0.1:8765
 uv run pytest -q
 ```
 
