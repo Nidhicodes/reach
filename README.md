@@ -279,4 +279,4 @@ Tested locally against a password-protected FalkorDB server with
 
 ## AI assistance disclosure
 
-Built with an AI coding assistant (Kiro). All code is reviewed and understood by the author.
+Built with an AI coding assistant. All code is reviewed and understood by the author.
